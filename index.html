@@ -161,13 +161,15 @@
     }
 
     /* replace existing backgrounds */
-#air .aq-controls,
-#air .aq-legend {
-  background: rgba(255,255,255,.96) !important;
-}
-.aq-legend .swatch {
-  border-color: rgba(0,0,0,.2) !important;
-}
+    #air .aq-controls,
+    #air .aq-legend {
+      background: rgba(255, 255, 255, .96) !important;
+    }
+
+    .aq-legend .swatch {
+      border-color: rgba(0, 0, 0, .2) !important;
+    }
+
     /* Controls: wrap neatly and shrink */
     #air .aq-controls {
       display: flex;
@@ -312,6 +314,35 @@
                   (Increase this % to see more of the bottom, decrease for top)
     */
         background-position: center 60%;
+      }
+    }
+
+    /* Fix MapLibre icon override */
+    #banner .icons.major .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Legend shrink behavior */
+    #air .aq-legend .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      width: 100%;
+    }
+
+    #air .aq-legend .row span:nth-child(2) {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Mobile max width */
+    @media (max-width: 480px) {
+      #air .aq-legend {
+        max-width: 240px !important;
       }
     }
   </style>
