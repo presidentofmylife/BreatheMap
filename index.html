@@ -160,6 +160,14 @@
       border-radius: 10px;
     }
 
+    /* replace existing backgrounds */
+#air .aq-controls,
+#air .aq-legend {
+  background: rgba(255,255,255,.96) !important;
+}
+.aq-legend .swatch {
+  border-color: rgba(0,0,0,.2) !important;
+}
     /* Controls: wrap neatly and shrink */
     #air .aq-controls {
       display: flex;
@@ -290,6 +298,20 @@
 
       #analytics .chart-wrap {
         height: 180px;
+      }
+    }
+
+    /* Adjust background position for mobile devices */
+    @media (max-width: 736px) {
+
+      body.landing #banner,
+      body.is-mobile.landing #banner {
+        /* Format: horizontal-position vertical-position 
+       'center' = keeps it centered left-to-right
+       '60%'    = moves the focal point lower down the image 
+                  (Increase this % to see more of the bottom, decrease for top)
+    */
+        background-position: center 60%;
       }
     }
   </style>
