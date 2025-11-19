@@ -1,0 +1,703 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>BreatheMap</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+  <!-- HTML5 UP styles (unchanged) -->
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/ethereal.css" />
+
+  <noscript>
+    <link rel="stylesheet" href="assets/css/noscript.css" />
+  </noscript>
+
+  <!-- MapLibre GL CSS -->
+  <link href="https://unpkg.com/maplibre-gl@3.6.0/dist/maplibre-gl.css" rel="stylesheet" />
+
+  <style>
+    /* ======== HERO WITH EUROPE IMAGE (no map) ======== */
+    #banner {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Set your hero image(s) here */
+    body.landing #banner,
+    body.is-mobile.landing #banner {
+      background-image: image-set(
+          /* url('images/europe-hero.webp') type('image/webp'),
+          url('images/europe-hero.jpg') type('image/jpeg'), */
+          url('images/europe-hero.png') type('image/png'));
+      background-position: center 40%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    /* Darken + subtle sky tint so text is legible */
+    #banner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 50% 20%, rgba(88, 195, 255, .18), rgba(12, 31, 54, .55)),
+        linear-gradient(to bottom, rgba(0, 0, 0, .25), rgba(0, 0, 0, .55));
+      mix-blend-mode: multiply;
+    }
+
+    #banner .inner,
+    #banner .more {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Avoid fixed backgrounds on small devices for performance */
+    @media (max-width: 980px) {
+      #banner {
+        background-attachment: scroll;
+      }
+    }
+
+    /* ======== POLLUTANT MAP SECTION ======== */
+    #air {
+      padding: 3rem;
+    }
+
+    #air .map-wrap {
+      position: relative;
+      height: 80vh;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .15);
+    }
+
+    #pollutant-map {
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Controls + legend (scoped) */
+    .aq-controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+      background: rgba(255, 255, 255, .96);
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, .15);
+      font: 14px/1.3 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+
+    .aq-controls label {
+      display: inline-block;
+      margin: 4px 8px 4px 0;
+    }
+
+    .aq-controls select,
+    .aq-controls button {
+      font: inherit;
+      padding: 4px 6px;
+    }
+
+    .aq-legend {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      z-index: 2;
+      background: rgba(255, 255, 255, .96);
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, .15);
+      min-width: 220px;
+      font: 13px/1.3 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+
+    .aq-legend .row {
+      display: flex;
+      align-items: center;
+      margin: 3px 0;
+    }
+
+    .aq-legend .swatch {
+      width: 18px;
+      height: 12px;
+      margin-right: 8px;
+      border: 1px solid rgba(0, 0, 0, .2);
+    }
+
+    /* Keep HTML5 UP icon sizes consistent */
+    .icons.major .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Small screens: make map a bit shorter */
+    @media (max-width: 736px) {
+      #air .map-wrap {
+        height: 65vh;
+      }
+    }
+
+    /* --- Responsive controls & legend for small screens --- */
+    :root {
+      --panel-font: clamp(11px, 1.6vw, 14px);
+      --panel-pad: clamp(6px, 1.2vw, 10px);
+      --panel-gap: clamp(6px, 1.4vw, 10px);
+      --swatch-w: clamp(12px, 2vw, 18px);
+      --swatch-h: clamp(8px, 1.4vw, 12px);
+    }
+
+    /* Shared panel tweaks */
+    #air .aq-controls,
+    #air .aq-legend {
+      font-size: var(--panel-font);
+      padding: var(--panel-pad) calc(var(--panel-pad) + 2px);
+      border-radius: 10px;
+    }
+
+    /* Controls: wrap neatly and shrink */
+    #air .aq-controls {
+      display: flex;
+      align-items: center;
+      gap: var(--panel-gap);
+      flex-wrap: wrap;
+      left: 10px;
+      right: auto;
+      /* default left-anchored */
+      max-width: min(640px, calc(100% - 20px));
+    }
+
+    #air .aq-controls label {
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    #air .aq-controls select,
+    #air .aq-controls button {
+      font: inherit;
+      padding: 4px 6px;
+      height: auto;
+      line-height: 1.2;
+    }
+
+    /* Legend: allow it to shrink and scroll if needed */
+    #air .aq-legend {
+      min-width: unset;
+      max-width: min(340px, calc(100% - 20px));
+      max-height: 40vh;
+      overflow: auto;
+    }
+
+    #air .aq-legend .row {
+      gap: 6px;
+    }
+
+    #air .aq-legend .swatch {
+      width: var(--swatch-w);
+      height: var(--swatch-h);
+    }
+
+    /* <= 640px: stretch panels to available width with safe margins */
+    @media (max-width: 640px) {
+      #air .aq-controls {
+        left: 8px;
+        right: 8px;
+        /* full-width bar with side gutters */
+        max-width: none;
+        justify-content: space-between;
+      }
+
+      #air .aq-legend {
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+      }
+    }
+
+    /* <= 420px: two-column controls; button on its own row */
+    @media (max-width: 420px) {
+      #air .aq-controls {
+        gap: 8px 10px;
+      }
+
+      #air .aq-controls label {
+        flex: 1 1 48%;
+      }
+
+      #air .aq-controls button {
+        flex: 1 1 100%;
+        order: 3;
+        /* push below selects */
+      }
+    }
+
+    /* Optional: give MapLibre nav some breathing room on mobile */
+    @media (max-width: 640px) {
+      .maplibregl-ctrl-top-right {
+        right: 8px;
+        top: 54px;
+      }
+    }
+
+    /* === Analytics charts === */
+    #analytics .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    #analytics .chart-card {
+      background: #fff;
+      color: #2E3842;
+      border-radius: 12px;
+      padding: 1rem 1rem 0.5rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
+    }
+
+    #analytics .chart-card h3 {
+      margin: 0 0 .5rem 0;
+      color: #2E3842;
+    }
+
+    #analytics .chart-wrap {
+      position: relative;
+      height: 220px;
+      /* Chart.js uses container height when maintainAspectRatio:false */
+    }
+
+    @media (max-width: 980px) {
+      #analytics .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      #analytics .chart-wrap {
+        height: 200px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #analytics .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #analytics .chart-wrap {
+        height: 180px;
+      }
+    }
+  </style>
+</head>
+
+<body class="landing is-preload">
+
+  <!-- Page Wrapper -->
+  <div id="page-wrapper">
+
+    <!-- Header -->
+    <header id="header" class="alt">
+      <h1><a href="index.html">BreatheMap</a></h1>
+      <nav id="nav">
+        <ul>
+          <li class="special">
+            <a href="#menu" class="menuToggle"><span>Menu</span></a>
+            <div id="menu">
+              <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#air">Air Quality</a></li>
+                <li><a href="#three">Features</a></li>
+                <li><a href="#">Sign Up</a></li>
+                <li><a href="#">Log In</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Banner with EUROPE IMAGE background (no map element inside) -->
+    <section id="banner">
+      <div class="inner">
+        <h2>BreatheMap</h2>
+        <p>Map of pollution across Europe<br /></p>
+        <ul class="actions special">
+          <li><a href="#air" class="button primary scrolly">Explore Air Quality</a></li>
+        </ul>
+      </div>
+      <a href="#air" class="more scrolly">Learn More</a>
+    </section>
+
+    <!-- Air Quality MAP + Analytics (new section placed right after banner) -->
+    <section id="air" class="wrapper alt style2">
+      <div class="inner">
+        <div class="map-wrap">
+          <div id="pollutant-map"></div>
+
+          <!-- UI -->
+          <div class="aq-controls">
+            <label>
+              Metric:
+              <select id="aq-metric">
+                <option value="pm10">PM10 (µg/m³)</option>
+                <option value="no2">NO₂ (µg/m³)</option>
+                <option value="o3">O₃ MDA8 (µg/m³)</option>
+              </select>
+            </label>
+            <label>
+              Scale:
+              <select id="aq-scale">
+                <option value="fixed">Fixed thresholds</option>
+                <option value="quantile">Quantiles (6 classes)</option>
+              </select>
+            </label>
+            <button id="aq-reset" type="button">Reset view</button>
+          </div>
+          <div class="aq-legend" id="aq-legend"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Original sections keep working -->
+    <!-- <section id="one" class="wrapper style1 special">
+      <div class="inner">
+        <header class="major">
+          <h2>Arcu aliquet vel lobortis ata nisl<br />
+            eget augue amet aliquet nisl cep donec</h2>
+          <p>Aliquam ut ex ut augue consectetur interdum. Donec amet imperdiet eleifend<br />
+            fringilla tincidunt. Nullam dui leo Aenean mi ligula, rhoncus ullamcorper.</p>
+        </header>
+        <ul class="icons major">
+          <li><span class="icon fa-gem major style1"><span class="label">Lorem</span></span></li>
+          <li><span class="icon fa-heart major style2"><span class="label">Ipsum</span></span></li>
+          <li><span class="icon solid fa-code major style3"><span class="label">Dolor</span></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="three" class="wrapper style3 special">
+      <div class="inner">
+        <header class="major">
+          <h2>Accumsan mus tortor nunc aliquet</h2>
+          <p>Aliquam ut ex ut augue consectetur interdum. Donec amet imperdiet eleifend<br />
+            fringilla tincidunt. Nullam dui leo Aenean mi ligula, rhoncus ullamcorper.</p>
+        </header>
+        <ul class="features">
+          <li class="icon fa-paper-plane">
+            <h3>Arcu accumsan</h3>
+            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
+              consequat consequat.</p>
+          </li>
+          <li class="icon solid fa-laptop">
+            <h3>Ac Augue Eget</h3>
+            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
+              consequat consequat.</p>
+          </li>
+          <li class="icon solid fa-code">
+            <h3>Mus Scelerisque</h3>
+            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
+              consequat consequat.</p>
+          </li>
+          <li class="icon solid fa-headphones-alt">
+            <h3>Mauris Imperdiet</h3>
+            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
+              consequat consequat.</p>
+          </li>
+          <li class="icon fa-heart">
+            <h3>Aenean Primis</h3>
+            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
+              consequat consequat.</p>
+          </li>
+          <li class="icon fa-flag">
+            <h3>Tortor Ut</h3>
+            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
+              consequat consequat.</p>
+          </li>
+        </ul>
+      </div>
+    </section> -->
+
+    <section id="analytics" class="wrapper style5">
+      <div class="inner">
+        <header class="major align-center">
+          <h2>Pollutant Distribution (%)</h2>
+          <p>Share of countries within each concentration band.</p>
+        </header>
+
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3>PM10</h3>
+            <div class="chart-wrap"><canvas id="chart-pm10"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>NO₂</h3>
+            <div class="chart-wrap"><canvas id="chart-no2"></canvas></div>
+          </div>
+          <!-- <div class="chart-card">
+            <h3>O₃ MDA8</h3>
+            <div class="chart-wrap"><canvas id="chart-o3"></canvas></div>
+          </div> -->
+          <!-- <div class="chart-card">
+            <h3>Overall (All Bands)</h3>
+            <div class="chart-wrap"><canvas id="chart-overall"></canvas></div>
+          </div> -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer (unchanged) -->
+    <footer id="footer">
+      <ul class="icons">
+        <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+        <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+        <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+        <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+        <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+      </ul>
+      <ul class="copyright">
+        <li>&copy; BreatheMap</li>
+      </ul>
+    </footer>
+
+  </div>
+
+  <!-- Vendor scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="https://unpkg.com/maplibre-gl@3.6.0/dist/maplibre-gl.js"></script>
+
+  <!-- HTML5 UP scripts -->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/jquery.scrollex.min.js"></script>
+  <script src="assets/js/jquery.scrolly.min.js"></script>
+  <script src="assets/js/browser.min.js"></script>
+  <script src="assets/js/breakpoints.min.js"></script>
+  <script src="assets/js/util.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <!-- App script: pollutant map only (hero map removed) -->
+  <script>
+    (function () {
+      const MAPTILER_KEY = "Fa0eCZfHtPXtTP8CW5zo"; // TODO: replace with your own MapTiler key
+
+      /* ======================== POLLUTANT MAP ======================== */
+      const aqMap = new maplibregl.Map({
+        container: 'pollutant-map',
+        style: `https://api.maptiler.com/maps/streets/style.json?key=${MAPTILER_KEY}`,
+        center: [0, 20],
+        zoom: 1.5,
+        attributionControl: true
+      });
+      aqMap.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+      /* ---- 1) DATASETS (ISO3 -> value) ---- */
+      const datasets = {
+        pm10: { ITA: 42, FRA: 35, ESP: 28, DEU: 22, POL: 30, GBR: 18, GRC: 33, PRT: 20, ROU: 31, SWE: 12 },
+        no2: { ITA: 23, FRA: 24, ESP: 20, DEU: 25, POL: 19, GBR: 24, GRC: 21, PRT: 15, ROU: 17, SWE: 10 },
+        o3: { ITA: 110, FRA: 95, ESP: 105, DEU: 85, POL: 90, GBR: 80, GRC: 120, PRT: 100, ROU: 98, SWE: 75 }
+      };
+
+      /* ---- 2) THRESHOLDS (for fixed mode) ---- */
+      const fixedThresholds = {
+        pm10: [10, 20, 30, 40, 50],
+        no2: [10, 20, 30, 40, 50],
+        o3: [60, 90, 120, 150, 180]
+      };
+      const metricLabels = {
+        pm10: 'PM10 (µg/m³)',
+        no2: 'NO₂ (µg/m³)',
+        o3: 'O₃ MDA8 (µg/m³)'
+      };
+      const palette = ['#f1eef6', '#bdc9e1', '#74a9cf', '#2b8cbe', '#045a8d', '#023858'];
+      const noDataColor = '#e2e2e2';
+
+      function buildFillColorExpression(thresholds) {
+        const v = ['coalesce', ['feature-state', 'val'], -9999];
+        const n = Math.min(thresholds.length, palette.length - 1);
+        const step = ['step', v, palette[0]];
+        for (let i = 0; i < n; i++) step.push(thresholds[i], palette[i + 1]);
+        return ['case', ['==', v, -9999], noDataColor, step];
+      }
+      function quantilesFromData(metric, classes = 6) {
+        const values = Object.values(datasets[metric] || {}).filter(x => typeof x === 'number').sort((a, b) => a - b);
+        if (values.length < 2) return fixedThresholds[metric];
+        const thresholds = [];
+        for (let i = 1; i < classes; i++) thresholds.push(quantile(values, i / classes));
+        return Array.from(new Set(thresholds.map(x => +x.toFixed(2))));
+      }
+      function quantile(arr, p) {
+        const idx = (arr.length - 1) * p; const lo = Math.floor(idx), hi = Math.ceil(idx);
+        if (lo === hi) return arr[lo];
+        return arr[lo] + (arr[hi] - arr[lo]) * (idx - lo);
+      }
+      function updateLegend(metric, thresholds) {
+        const el = document.getElementById('aq-legend');
+        const unitLabel = metricLabels[metric] || metric;
+        const fmt = v => (Math.abs(v) >= 100 ? v.toFixed(0) : v.toString());
+        const parts = [];
+        parts.push(`<div style="margin-bottom:6px;"><b>${unitLabel}</b></div>`);
+        parts.push(`<div class="row"><span class="swatch" style="background:${palette[0]}"></span><span>&lt; ${fmt(thresholds[0])}</span></div>`);
+        for (let i = 0; i < thresholds.length - 1; i++)
+          parts.push(`<div class="row"><span class="swatch" style="background:${palette[i + 1]}"></span><span>${fmt(thresholds[i])} – ${fmt(thresholds[i + 1])}</span></div>`);
+        parts.push(`<div class="row"><span class="swatch" style="background:${palette[palette.length - 1]}"></span><span>≥ ${fmt(thresholds[thresholds.length - 1])}</span></div>`);
+        parts.push(`<div class="row"><span class="swatch" style="background:${noDataColor}"></span><span>No data</span></div>`);
+        el.innerHTML = parts.join('');
+      }
+
+      function applyDataset(map, metric) {
+        const scaleMode = document.getElementById('aq-scale').value;
+        const thresholds = (scaleMode === 'quantile') ? quantilesFromData(metric, 6) : fixedThresholds[metric];
+        map.setPaintProperty('country-fill', 'fill-color', buildFillColorExpression(thresholds));
+        updateLegend(metric, thresholds);
+
+        if (!window._aqCountriesFeatures) return;
+        const data = datasets[metric] || {};
+        for (const f of window._aqCountriesFeatures) {
+          const iso3 = f.id; // we ensure this below
+          const val = data[iso3];
+          map.setFeatureState({ source: 'countries', id: iso3 }, { val: (typeof val === 'number' ? val : null) });
+        }
+      }
+
+      aqMap.on('load', async () => {
+        // Countries GeoJSON
+        const url = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
+        const geo = await (await fetch(url)).json();
+        // Normalize IDs to ISO3 so we can set feature-state reliably
+        for (const f of geo.features) {
+          const iso3 = f.properties['ISO3166-1-Alpha-3'] || f.properties['ISO_A3'] || f.properties['ADM0_A3'] || f.id || f.properties['WB_A3'] || 'UNK';
+          f.id = iso3; // set feature.id
+        }
+        window._aqCountriesFeatures = geo.features;
+
+        aqMap.addSource('countries', { type: 'geojson', data: geo });
+
+        aqMap.addLayer({
+          id: 'country-fill', type: 'fill', source: 'countries',
+          paint: { 'fill-color': buildFillColorExpression(fixedThresholds.pm10), 'fill-opacity': 0.8 }
+        });
+        aqMap.addLayer({ id: 'country-outline', type: 'line', source: 'countries', paint: { 'line-color': '#666', 'line-width': 0.6 } });
+
+        // Click popup
+        const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: true });
+        aqMap.on('click', 'country-fill', (e) => {
+          const f = e.features[0];
+          const iso3 = f.id;
+          const name = f.properties.name || f.properties.ADMIN || 'Country';
+          const metric = document.getElementById('aq-metric').value;
+          const data = datasets[metric] || {};
+          const v = data[iso3];
+          popup.setLngLat(e.lngLat)
+            .setHTML(`<b>${name}</b><br>${metricLabels[metric] || metric}: ${v != null ? v : 'No data'}`)
+            .addTo(aqMap);
+        });
+        aqMap.on('mouseenter', 'country-fill', () => aqMap.getCanvas().style.cursor = 'pointer');
+        aqMap.on('mouseleave', 'country-fill', () => aqMap.getCanvas().style.cursor = '');
+
+        applyDataset(aqMap, 'pm10');
+      });
+      /* ======================== ANALYTICS / CHARTS ======================== */
+      // Build bucket labels like "< 10", "10 – 20", ..., "≥ 50"
+      function bucketLabels(thresholds) {
+        const fmt = v => (Math.abs(v) >= 100 ? v.toFixed(0) : v.toString());
+        const labels = [`< ${fmt(thresholds[0])}`];
+        for (let i = 0; i < thresholds.length - 1; i++) {
+          labels.push(`${fmt(thresholds[i])} – ${fmt(thresholds[i + 1])}`);
+        }
+        labels.push(`≥ ${fmt(thresholds[thresholds.length - 1])}`);
+        return labels;
+      }
+
+      // Count % of values that fall in each bucket for given thresholds
+      function percentageDistribution(values, thresholds) {
+        const bins = new Array(thresholds.length + 1).fill(0);
+        for (const x of values) {
+          let i = 0;
+          while (i < thresholds.length && x >= thresholds[i]) i++;
+          bins[i]++;
+        }
+        const total = values.length || 1;
+        return bins.map(c => +(c * 100 / total).toFixed(1));
+      }
+
+      function makeDoughnutChart(canvasId, labels, data, colors) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return;
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels,
+            datasets: [{ data, backgroundColor: colors }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom' },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.label}: ${ctx.parsed}%`
+                }
+              }
+            },
+            animation: { duration: 500 }
+          }
+        });
+      }
+
+      function renderAnalytics() {
+        // 6-color palette to match the legend bands
+        const bandColors = palette.slice(0, 6);
+
+        // PM10
+        const pm10Vals = Object.values(datasets.pm10);
+        const pm10Thr = fixedThresholds.pm10;
+        makeDoughnutChart('chart-pm10', bucketLabels(pm10Thr), percentageDistribution(pm10Vals, pm10Thr), bandColors);
+
+        // NO2
+        const no2Vals = Object.values(datasets.no2);
+        const no2Thr = fixedThresholds.no2;
+        makeDoughnutChart('chart-no2', bucketLabels(no2Thr), percentageDistribution(no2Vals, no2Thr), bandColors);
+
+        // O3
+        const o3Vals = Object.values(datasets.o3);
+        const o3Thr = fixedThresholds.o3;
+        makeDoughnutChart('chart-o3', bucketLabels(o3Thr), percentageDistribution(o3Vals, o3Thr), bandColors);
+
+        // Overall: pool all values across pollutants using their own thresholds
+        // We compute bins per pollutant and sum them so we have 6 overall bands.
+        const bands = 6;
+        const sumBins = new Array(bands).fill(0);
+        function addBins(vals, thr) {
+          const bins = percentageDistribution(vals, thr); // in %
+          for (let i = 0; i < bands; i++) sumBins[i] += bins[i];
+        }
+        addBins(pm10Vals, pm10Thr);
+        addBins(no2Vals, no2Thr);
+        addBins(o3Vals, o3Thr);
+        // Average the percentages across the 3 pollutants for a balanced overall view
+        const overall = sumBins.map(v => +(v / 3).toFixed(1));
+        makeDoughnutChart('chart-overall', bucketLabels(pm10Thr), overall, bandColors);
+      }
+
+      // Render charts once DOM is ready (no need to wait for map load)
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderAnalytics);
+      } else {
+        renderAnalytics();
+      }
+
+      // UI events
+      document.getElementById('aq-metric').addEventListener('change', (e) => applyDataset(aqMap, e.target.value));
+      document.getElementById('aq-scale').addEventListener('change', () => applyDataset(aqMap, document.getElementById('aq-metric').value));
+      document.getElementById('aq-reset').addEventListener('click', () => aqMap.flyTo({ center: [0, 20], zoom: 1.5 }));
+    })();
+  </script>
+</body>
+
+</html>
