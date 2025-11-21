@@ -28,8 +28,6 @@
     body.landing #banner,
     body.is-mobile.landing #banner {
       background-image: image-set(
-          /* url('images/europe-hero.webp') type('image/webp'),
-          url('images/europe-hero.jpg') type('image/jpeg'), */
           url('images/europe-hero.png') type('image/png'));
       background-position: center 40%;
       background-size: cover;
@@ -85,22 +83,27 @@
       top: 10px;
       left: 10px;
       z-index: 2;
-      background: rgba(255, 255, 255, .96);
+      /* background: rgba(255, 255, 255, .98); */
+      backdrop-filter: blur(10px);
       border-radius: 8px;
-      padding: 10px 12px;
-      box-shadow: 0 1px 8px rgba(0, 0, 0, .15);
-      font: 14px/1.3 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      padding: 8px 10px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .2);
+      font: 13px/1.3 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      max-width: fit-content;
     }
 
     .aq-controls label {
       display: inline-block;
-      margin: 4px 8px 4px 0;
+      margin: 2px 6px 2px 0;
+      font-weight: 500;
+      color: #2a2a2a;
     }
 
     .aq-controls select,
     .aq-controls button {
       font: inherit;
-      padding: 4px 6px;
+      padding: 3px 5px;
+      font-size: 12px;
     }
 
     .aq-legend {
@@ -108,25 +111,30 @@
       bottom: 10px;
       left: 10px;
       z-index: 2;
-      background: rgba(255, 255, 255, .96);
+      /* background: rgba(255, 255, 255, .98);   */
+      backdrop-filter: blur(10px);
       border-radius: 8px;
-      padding: 10px 12px;
-      box-shadow: 0 1px 8px rgba(0, 0, 0, .15);
-      min-width: 220px;
-      font: 13px/1.3 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      padding: 8px 10px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .2);
+      min-width: 180px;
+      max-width: 200px;
+      font: 12px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: #2a2a2a;
     }
 
     .aq-legend .row {
       display: flex;
       align-items: center;
-      margin: 3px 0;
+      margin: 2px 0;
+      font-size: 11px;
     }
 
     .aq-legend .swatch {
-      width: 18px;
-      height: 12px;
-      margin-right: 8px;
-      border: 1px solid rgba(0, 0, 0, .2);
+      width: 16px;
+      height: 10px;
+      margin-right: 6px;
+      border: 1px solid rgba(0, 0, 0, .25);
+      flex-shrink: 0;
     }
 
     /* Keep HTML5 UP icon sizes consistent */
@@ -160,16 +168,6 @@
       border-radius: 10px;
     }
 
-    /* replace existing backgrounds */
-    #air .aq-controls,
-    #air .aq-legend {
-      background: rgba(255, 255, 255, .96) !important;
-    }
-
-    .aq-legend .swatch {
-      border-color: rgba(0, 0, 0, .2) !important;
-    }
-
     /* Controls: wrap neatly and shrink */
     #air .aq-controls {
       display: flex;
@@ -178,8 +176,7 @@
       flex-wrap: wrap;
       left: 10px;
       right: auto;
-      /* default left-anchored */
-      max-width: min(640px, calc(100% - 20px));
+      /* max-width: min(500px, calc(100% - 20px)); */
     }
 
     #air .aq-controls label {
@@ -201,7 +198,7 @@
     /* Legend: allow it to shrink and scroll if needed */
     #air .aq-legend {
       min-width: unset;
-      max-width: min(340px, calc(100% - 20px));
+      max-width: min(200px, calc(100% - 20px));
       max-height: 40vh;
       overflow: auto;
     }
@@ -220,7 +217,6 @@
       #air .aq-controls {
         left: 8px;
         right: 8px;
-        /* full-width bar with side gutters */
         max-width: none;
         justify-content: space-between;
       }
@@ -245,7 +241,6 @@
       #air .aq-controls button {
         flex: 1 1 100%;
         order: 3;
-        /* push below selects */
       }
     }
 
@@ -254,6 +249,266 @@
       .maplibregl-ctrl-top-right {
         right: 8px;
         top: 54px;
+      }
+    }
+
+    /* ======== TIME SLIDER ======== */
+    .time-slider-container {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      background: rgba(255, 255, 255, .98);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 12px 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .2);
+      min-width: 300px;
+      max-width: 500px;
+      font: 13px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+
+    .time-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .time-display {
+      font-weight: 600;
+      font-size: 15px;
+      color: #2a2a2a;
+    }
+
+    .time-breadcrumb {
+      font-size: 11px;
+      color: #666;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .time-breadcrumb span:hover {
+      text-decoration: underline;
+    }
+
+    .time-breadcrumb span.active {
+      font-weight: 600;
+      color: #2a2a2a;
+    }
+
+    .slider-wrapper {
+      position: relative;
+      margin: 10px 0;
+    }
+
+    .time-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e0e0e0;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .time-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #045a8d;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+    }
+
+    .time-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #045a8d;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+    }
+
+    .time-slider::-webkit-slider-thumb:hover {
+      background: #2b8cbe;
+    }
+
+    .time-slider::-moz-range-thumb:hover {
+      background: #2b8cbe;
+    }
+
+    .time-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .time-labels span {
+      transform: rotate(-45deg);
+      transform-origin: center;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .time-controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .time-btn {
+      flex: 1;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 12px;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .time-btn:hover {
+      background: #e8e8e8;
+    }
+
+    .time-btn.primary {
+      background: #045a8d;
+      color: white;
+      border-color: #045a8d;
+    }
+
+    .time-btn.primary:hover {
+      background: #2b8cbe;
+    }
+
+    /* Responsive time slider - moves to right and shrinks */
+    @media (max-width: 980px) {
+      .time-slider-container {
+        left: auto;
+        right: 10px;
+        transform: none;
+        min-width: 240px;
+        max-width: 280px;
+        padding: 10px 14px;
+        bottom: 10px;
+      }
+
+      .time-display {
+        font-size: 13px;
+      }
+
+      .time-breadcrumb {
+        font-size: 10px;
+      }
+
+      .time-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+      }
+
+      .time-labels {
+        font-size: 9px;
+      }
+
+      .time-slider::-webkit-slider-thumb {
+        width: 14px;
+        height: 14px;
+      }
+
+      .time-slider::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .time-slider-container {
+        right: 8px;
+        min-width: 180px;
+        max-width: 200px;
+        padding: 8px 10px;
+        bottom: 8px;
+      }
+
+      .time-header {
+        margin-bottom: 6px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+      }
+
+      .time-display {
+        font-size: 11px;
+      }
+
+      .time-breadcrumb {
+        font-size: 9px;
+      }
+
+      .slider-wrapper {
+        margin: 6px 0;
+      }
+
+      .time-slider {
+        height: 4px;
+      }
+
+      .time-slider::-webkit-slider-thumb {
+        width: 12px;
+        height: 12px;
+      }
+
+      .time-slider::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+      }
+
+      .time-labels {
+        font-size: 8px;
+        margin-top: 2px;
+      }
+
+      .time-controls {
+        gap: 4px;
+        margin-top: 6px;
+      }
+
+      .time-btn {
+        padding: 4px 6px;
+        font-size: 9px;
+        border-radius: 4px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .time-slider-container {
+        min-width: 150px;
+        max-width: 160px;
+        padding: 6px 8px;
+      }
+
+      .time-display {
+        font-size: 10px;
+      }
+
+      .time-breadcrumb {
+        font-size: 8px;
+      }
+
+      .time-labels {
+        font-size: 7px;
+      }
+
+      .time-btn {
+        padding: 3px 4px;
+        font-size: 8px;
       }
     }
 
@@ -280,7 +535,6 @@
     #analytics .chart-wrap {
       position: relative;
       height: 220px;
-      /* Chart.js uses container height when maintainAspectRatio:false */
     }
 
     @media (max-width: 980px) {
@@ -308,11 +562,6 @@
 
       body.landing #banner,
       body.is-mobile.landing #banner {
-        /* Format: horizontal-position vertical-position 
-       'center' = keeps it centered left-to-right
-       '60%'    = moves the focal point lower down the image 
-                  (Increase this % to see more of the bottom, decrease for top)
-    */
         background-position: center 60%;
       }
     }
@@ -335,14 +584,14 @@
 
     #air .aq-legend .row span:nth-child(2) {
       white-space: nowrap;
-      overflow: hidden;
+      /* overflow: hidden; */
       text-overflow: ellipsis;
     }
 
     /* Mobile max width */
     @media (max-width: 480px) {
       #air .aq-legend {
-        max-width: 240px !important;
+        max-width: 90px !important;
       }
     }
   </style>
@@ -386,7 +635,7 @@
       <a href="#air" class="more scrolly">Learn More</a>
     </section>
 
-    <!-- Air Quality MAP + Analytics (new section placed right after banner) -->
+    <!-- Air Quality MAP + Analytics -->
     <section id="air" class="wrapper alt style2">
       <div class="inner">
         <div class="map-wrap">
@@ -412,68 +661,33 @@
             <button id="aq-reset" type="button">Reset view</button>
           </div>
           <div class="aq-legend" id="aq-legend"></div>
+          
+          <!-- Time Slider -->
+          <div class="time-slider-container">
+            <div class="time-header">
+              <div class="time-display" id="time-display">2024</div>
+              <div class="time-breadcrumb" id="time-breadcrumb">
+                <span class="active">Year</span>
+              </div>
+            </div>
+            <div class="slider-wrapper">
+              <input type="range" class="time-slider" id="time-slider" min="0" max="4" value="4" step="1">
+              <div class="time-labels" id="time-labels">
+                <span>2020</span>
+                <span>2021</span>
+                <span>2022</span>
+                <span>2023</span>
+                <span>2024</span>
+              </div>
+            </div>
+            <div class="time-controls">
+              <button class="time-btn" id="time-back">← Back</button>
+              <button class="time-btn primary" id="time-drill">Drill to Month →</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
-
-    <!-- Original sections keep working -->
-    <!-- <section id="one" class="wrapper style1 special">
-      <div class="inner">
-        <header class="major">
-          <h2>Arcu aliquet vel lobortis ata nisl<br />
-            eget augue amet aliquet nisl cep donec</h2>
-          <p>Aliquam ut ex ut augue consectetur interdum. Donec amet imperdiet eleifend<br />
-            fringilla tincidunt. Nullam dui leo Aenean mi ligula, rhoncus ullamcorper.</p>
-        </header>
-        <ul class="icons major">
-          <li><span class="icon fa-gem major style1"><span class="label">Lorem</span></span></li>
-          <li><span class="icon fa-heart major style2"><span class="label">Ipsum</span></span></li>
-          <li><span class="icon solid fa-code major style3"><span class="label">Dolor</span></span></li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="three" class="wrapper style3 special">
-      <div class="inner">
-        <header class="major">
-          <h2>Accumsan mus tortor nunc aliquet</h2>
-          <p>Aliquam ut ex ut augue consectetur interdum. Donec amet imperdiet eleifend<br />
-            fringilla tincidunt. Nullam dui leo Aenean mi ligula, rhoncus ullamcorper.</p>
-        </header>
-        <ul class="features">
-          <li class="icon fa-paper-plane">
-            <h3>Arcu accumsan</h3>
-            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
-              consequat consequat.</p>
-          </li>
-          <li class="icon solid fa-laptop">
-            <h3>Ac Augue Eget</h3>
-            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
-              consequat consequat.</p>
-          </li>
-          <li class="icon solid fa-code">
-            <h3>Mus Scelerisque</h3>
-            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
-              consequat consequat.</p>
-          </li>
-          <li class="icon solid fa-headphones-alt">
-            <h3>Mauris Imperdiet</h3>
-            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
-              consequat consequat.</p>
-          </li>
-          <li class="icon fa-heart">
-            <h3>Aenean Primis</h3>
-            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
-              consequat consequat.</p>
-          </li>
-          <li class="icon fa-flag">
-            <h3>Tortor Ut</h3>
-            <p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula
-              consequat consequat.</p>
-          </li>
-        </ul>
-      </div>
-    </section> -->
 
     <section id="analytics" class="wrapper style5">
       <div class="inner">
@@ -491,19 +705,11 @@
             <h3>NO₂</h3>
             <div class="chart-wrap"><canvas id="chart-no2"></canvas></div>
           </div>
-          <!-- <div class="chart-card">
-            <h3>O₃ MDA8</h3>
-            <div class="chart-wrap"><canvas id="chart-o3"></canvas></div>
-          </div> -->
-          <!-- <div class="chart-card">
-            <h3>Overall (All Bands)</h3>
-            <div class="chart-wrap"><canvas id="chart-overall"></canvas></div>
-          </div> -->
         </div>
       </div>
     </section>
 
-    <!-- Footer (unchanged) -->
+    <!-- Footer -->
     <footer id="footer">
       <ul class="icons">
         <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
@@ -521,7 +727,6 @@
 
   <!-- Vendor scripts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <script src="https://unpkg.com/maplibre-gl@3.6.0/dist/maplibre-gl.js"></script>
 
   <!-- HTML5 UP scripts -->
@@ -533,10 +738,10 @@
   <script src="assets/js/util.js"></script>
   <script src="assets/js/main.js"></script>
 
-  <!-- App script: pollutant map only (hero map removed) -->
+  <!-- App script -->
   <script>
     (function () {
-      const MAPTILER_KEY = "Fa0eCZfHtPXtTP8CW5zo"; // TODO: replace with your own MapTiler key
+      const MAPTILER_KEY = "Fa0eCZfHtPXtTP8CW5zo";
 
       /* ======================== POLLUTANT MAP ======================== */
       const aqMap = new maplibregl.Map({
@@ -576,6 +781,7 @@
         for (let i = 0; i < n; i++) step.push(thresholds[i], palette[i + 1]);
         return ['case', ['==', v, -9999], noDataColor, step];
       }
+
       function quantilesFromData(metric, classes = 6) {
         const values = Object.values(datasets[metric] || {}).filter(x => typeof x === 'number').sort((a, b) => a - b);
         if (values.length < 2) return fixedThresholds[metric];
@@ -583,37 +789,47 @@
         for (let i = 1; i < classes; i++) thresholds.push(quantile(values, i / classes));
         return Array.from(new Set(thresholds.map(x => +x.toFixed(2))));
       }
+
       function quantile(arr, p) {
-        const idx = (arr.length - 1) * p; const lo = Math.floor(idx), hi = Math.ceil(idx);
+        const idx = (arr.length - 1) * p;
+        const lo = Math.floor(idx), hi = Math.ceil(idx);
         if (lo === hi) return arr[lo];
         return arr[lo] + (arr[hi] - arr[lo]) * (idx - lo);
       }
+
       function updateLegend(metric, thresholds) {
         const el = document.getElementById('aq-legend');
         const unitLabel = metricLabels[metric] || metric;
         const fmt = v => (Math.abs(v) >= 100 ? v.toFixed(0) : v.toString());
         const parts = [];
-        parts.push(`<div style="margin-bottom:6px;"><b>${unitLabel}</b></div>`);
+        parts.push(`<div style="margin-bottom:4px; font-weight:600; color:#2a2a2a;">${unitLabel}</div>`);
         parts.push(`<div class="row"><span class="swatch" style="background:${palette[0]}"></span><span>&lt; ${fmt(thresholds[0])}</span></div>`);
         for (let i = 0; i < thresholds.length - 1; i++)
-          parts.push(`<div class="row"><span class="swatch" style="background:${palette[i + 1]}"></span><span>${fmt(thresholds[i])} – ${fmt(thresholds[i + 1])}</span></div>`);
+          parts.push(`<div class="row"><span class="swatch" style="background:${palette[i + 1]}"></span><span>${fmt(thresholds[i])}–${fmt(thresholds[i + 1])}</span></div>`);
         parts.push(`<div class="row"><span class="swatch" style="background:${palette[palette.length - 1]}"></span><span>≥ ${fmt(thresholds[thresholds.length - 1])}</span></div>`);
         parts.push(`<div class="row"><span class="swatch" style="background:${noDataColor}"></span><span>No data</span></div>`);
         el.innerHTML = parts.join('');
       }
 
-      function applyDataset(map, metric) {
+      function applyDataset(metric) {
         const scaleMode = document.getElementById('aq-scale').value;
         const thresholds = (scaleMode === 'quantile') ? quantilesFromData(metric, 6) : fixedThresholds[metric];
-        map.setPaintProperty('country-fill', 'fill-color', buildFillColorExpression(thresholds));
+        
+        // Update paint property
+        aqMap.setPaintProperty('country-fill', 'fill-color', buildFillColorExpression(thresholds));
         updateLegend(metric, thresholds);
 
+        // Set feature states
         if (!window._aqCountriesFeatures) return;
         const data = datasets[metric] || {};
+        
         for (const f of window._aqCountriesFeatures) {
-          const iso3 = f.id; // we ensure this below
+          const iso3 = f.properties['ISO3166-1-Alpha-3'];
           const val = data[iso3];
-          map.setFeatureState({ source: 'countries', id: iso3 }, { val: (typeof val === 'number' ? val : null) });
+          aqMap.setFeatureState(
+            { source: 'countries', id: iso3 },
+            { val: (typeof val === 'number' ? val : null) }
+          );
         }
       }
 
@@ -621,26 +837,39 @@
         // Countries GeoJSON
         const url = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
         const geo = await (await fetch(url)).json();
-        // Normalize IDs to ISO3 so we can set feature-state reliably
-        for (const f of geo.features) {
-          const iso3 = f.properties['ISO3166-1-Alpha-3'] || f.properties['ISO_A3'] || f.properties['ADM0_A3'] || f.id || f.properties['WB_A3'] || 'UNK';
-          f.id = iso3; // set feature.id
-        }
+        
+        // Store features for later use
         window._aqCountriesFeatures = geo.features;
 
-        aqMap.addSource('countries', { type: 'geojson', data: geo });
+        // Add source with promoteId to use ISO3 as feature ID
+        aqMap.addSource('countries', { 
+          type: 'geojson', 
+          data: geo,
+          promoteId: 'ISO3166-1-Alpha-3'
+        });
 
         aqMap.addLayer({
-          id: 'country-fill', type: 'fill', source: 'countries',
-          paint: { 'fill-color': buildFillColorExpression(fixedThresholds.pm10), 'fill-opacity': 0.8 }
+          id: 'country-fill',
+          type: 'fill',
+          source: 'countries',
+          paint: {
+            'fill-color': buildFillColorExpression(fixedThresholds.pm10),
+            'fill-opacity': 0.8
+          }
         });
-        aqMap.addLayer({ id: 'country-outline', type: 'line', source: 'countries', paint: { 'line-color': '#666', 'line-width': 0.6 } });
+
+        aqMap.addLayer({
+          id: 'country-outline',
+          type: 'line',
+          source: 'countries',
+          paint: { 'line-color': '#666', 'line-width': 0.6 }
+        });
 
         // Click popup
         const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: true });
         aqMap.on('click', 'country-fill', (e) => {
           const f = e.features[0];
-          const iso3 = f.id;
+          const iso3 = f.properties['ISO3166-1-Alpha-3'];
           const name = f.properties.name || f.properties.ADMIN || 'Country';
           const metric = document.getElementById('aq-metric').value;
           const data = datasets[metric] || {};
@@ -652,10 +881,11 @@
         aqMap.on('mouseenter', 'country-fill', () => aqMap.getCanvas().style.cursor = 'pointer');
         aqMap.on('mouseleave', 'country-fill', () => aqMap.getCanvas().style.cursor = '');
 
-        applyDataset(aqMap, 'pm10');
+        // Apply initial dataset
+        applyDataset('pm10');
       });
+
       /* ======================== ANALYTICS / CHARTS ======================== */
-      // Build bucket labels like "< 10", "10 – 20", ..., "≥ 50"
       function bucketLabels(thresholds) {
         const fmt = v => (Math.abs(v) >= 100 ? v.toFixed(0) : v.toString());
         const labels = [`< ${fmt(thresholds[0])}`];
@@ -666,7 +896,6 @@
         return labels;
       }
 
-      // Count % of values that fall in each bucket for given thresholds
       function percentageDistribution(values, thresholds) {
         const bins = new Array(thresholds.length + 1).fill(0);
         for (const x of values) {
@@ -704,7 +933,6 @@
       }
 
       function renderAnalytics() {
-        // 6-color palette to match the legend bands
         const bandColors = palette.slice(0, 6);
 
         // PM10
@@ -716,29 +944,8 @@
         const no2Vals = Object.values(datasets.no2);
         const no2Thr = fixedThresholds.no2;
         makeDoughnutChart('chart-no2', bucketLabels(no2Thr), percentageDistribution(no2Vals, no2Thr), bandColors);
-
-        // O3
-        const o3Vals = Object.values(datasets.o3);
-        const o3Thr = fixedThresholds.o3;
-        makeDoughnutChart('chart-o3', bucketLabels(o3Thr), percentageDistribution(o3Vals, o3Thr), bandColors);
-
-        // Overall: pool all values across pollutants using their own thresholds
-        // We compute bins per pollutant and sum them so we have 6 overall bands.
-        const bands = 6;
-        const sumBins = new Array(bands).fill(0);
-        function addBins(vals, thr) {
-          const bins = percentageDistribution(vals, thr); // in %
-          for (let i = 0; i < bands; i++) sumBins[i] += bins[i];
-        }
-        addBins(pm10Vals, pm10Thr);
-        addBins(no2Vals, no2Thr);
-        addBins(o3Vals, o3Thr);
-        // Average the percentages across the 3 pollutants for a balanced overall view
-        const overall = sumBins.map(v => +(v / 3).toFixed(1));
-        makeDoughnutChart('chart-overall', bucketLabels(pm10Thr), overall, bandColors);
       }
 
-      // Render charts once DOM is ready (no need to wait for map load)
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', renderAnalytics);
       } else {
@@ -746,9 +953,142 @@
       }
 
       // UI events
-      document.getElementById('aq-metric').addEventListener('change', (e) => applyDataset(aqMap, e.target.value));
-      document.getElementById('aq-scale').addEventListener('change', () => applyDataset(aqMap, document.getElementById('aq-metric').value));
+      document.getElementById('aq-metric').addEventListener('change', (e) => applyDataset(e.target.value));
+      document.getElementById('aq-scale').addEventListener('change', () => applyDataset(document.getElementById('aq-metric').value));
       document.getElementById('aq-reset').addEventListener('click', () => aqMap.flyTo({ center: [0, 20], zoom: 1.5 }));
+
+      /* ======================== TIME SLIDER ======================== */
+      const timeState = {
+        level: 'year',     // 'year', 'month', or 'day'
+        year: 2024,
+        month: null,
+        day: null
+      };
+
+      const years = [2020, 2021, 2022, 2023, 2024];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      function getDaysInMonth(year, month) {
+        return new Date(year, month + 1, 0).getDate();
+      }
+
+      function updateTimeSlider() {
+        const slider = document.getElementById('time-slider');
+        const display = document.getElementById('time-display');
+        const breadcrumb = document.getElementById('time-breadcrumb');
+        const labels = document.getElementById('time-labels');
+        const drillBtn = document.getElementById('time-drill');
+        const backBtn = document.getElementById('time-back');
+
+        if (timeState.level === 'year') {
+          slider.min = 0;
+          slider.max = years.length - 1;
+          slider.value = years.indexOf(timeState.year);
+          display.textContent = timeState.year;
+          breadcrumb.innerHTML = '<span class="active">Year</span>';
+          labels.innerHTML = years.map(y => `<span>${y}</span>`).join('');
+          drillBtn.textContent = 'Drill to Month →';
+          drillBtn.disabled = false;
+          backBtn.disabled = true;
+          backBtn.style.opacity = '0.5';
+        } 
+        else if (timeState.level === 'month') {
+          slider.min = 0;
+          slider.max = months.length - 1;
+          slider.value = timeState.month || 0;
+          display.textContent = `${months[timeState.month]} ${timeState.year}`;
+          breadcrumb.innerHTML = `<span id="bc-year">${timeState.year}</span> › <span class="active">Month</span>`;
+          labels.innerHTML = months.map(m => `<span>${m}</span>`).join('');
+          drillBtn.textContent = 'Drill to Day →';
+          drillBtn.disabled = false;
+          backBtn.disabled = false;
+          backBtn.style.opacity = '1';
+          
+          document.getElementById('bc-year').addEventListener('click', () => {
+            timeState.level = 'year';
+            timeState.month = null;
+            timeState.day = null;
+            updateTimeSlider();
+          });
+        }
+        else if (timeState.level === 'day') {
+          const daysInMonth = getDaysInMonth(timeState.year, timeState.month);
+          slider.min = 1;
+          slider.max = daysInMonth;
+          slider.value = timeState.day || 1;
+          display.textContent = `${months[timeState.month]} ${timeState.day}, ${timeState.year}`;
+          breadcrumb.innerHTML = `<span id="bc-year">${timeState.year}</span> › <span id="bc-month">${months[timeState.month]}</span> › <span class="active">Day</span>`;
+          
+          // Show day labels (simplified - show first, middle, last)
+          const dayLabels = [];
+          const step = Math.max(1, Math.floor(daysInMonth / 4));
+          for (let i = 1; i <= daysInMonth; i += step) {
+            dayLabels.push(i);
+          }
+          if (dayLabels[dayLabels.length - 1] !== daysInMonth) {
+            dayLabels.push(daysInMonth);
+          }
+          labels.innerHTML = dayLabels.map(d => `<span>${d}</span>`).join('');
+          
+          drillBtn.textContent = 'Max Detail';
+          drillBtn.disabled = true;
+          drillBtn.style.opacity = '0.5';
+          backBtn.disabled = false;
+          backBtn.style.opacity = '1';
+          
+          document.getElementById('bc-year').addEventListener('click', () => {
+            timeState.level = 'year';
+            timeState.month = null;
+            timeState.day = null;
+            updateTimeSlider();
+          });
+          
+          document.getElementById('bc-month').addEventListener('click', () => {
+            timeState.level = 'month';
+            timeState.day = null;
+            updateTimeSlider();
+          });
+        }
+      }
+
+      document.getElementById('time-slider').addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        if (timeState.level === 'year') {
+          timeState.year = years[val];
+          document.getElementById('time-display').textContent = timeState.year;
+        } else if (timeState.level === 'month') {
+          timeState.month = val;
+          document.getElementById('time-display').textContent = `${months[val]} ${timeState.year}`;
+        } else if (timeState.level === 'day') {
+          timeState.day = val;
+          document.getElementById('time-display').textContent = `${months[timeState.month]} ${val}, ${timeState.year}`;
+        }
+      });
+
+      document.getElementById('time-drill').addEventListener('click', () => {
+        if (timeState.level === 'year') {
+          timeState.level = 'month';
+          timeState.month = 0;
+        } else if (timeState.level === 'month') {
+          timeState.level = 'day';
+          timeState.day = 1;
+        }
+        updateTimeSlider();
+      });
+
+      document.getElementById('time-back').addEventListener('click', () => {
+        if (timeState.level === 'day') {
+          timeState.level = 'month';
+          timeState.day = null;
+        } else if (timeState.level === 'month') {
+          timeState.level = 'year';
+          timeState.month = null;
+        }
+        updateTimeSlider();
+      });
+
+      // Initialize
+      updateTimeSlider();
     })();
   </script>
 </body>
