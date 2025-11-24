@@ -1,9 +1,6 @@
 {
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "css/**", "use": "@vercel/static" },
-    { "src": "js/**", "use": "@vercel/static" },
-    { "src": "images/**", "use": "@vercel/static" },
-    { "src": "assets/**", "use": "@vercel/static" }
-  ]
+    "builds": [{ "src": "app.py", "use": "@vercel/python" }],
+    "routes": [
+        { "src": "/(.*)", "dest": "app.py" }
+    ]
 }
