@@ -353,168 +353,244 @@
 
 // ===== Charts (separate DOMContentLoaded block retained) =====
 document.addEventListener("DOMContentLoaded", function () {
+  
+  // 1. Check if data exists
+  let db = window.analyticsData;
+  if (!db) {
+    console.error("Analytics data not loaded from Flask");
+    return;
+  }
+  // console.log(db);
+  try {
+    db = JSON.parse(db);
+  } catch (e) {
+    // console.error("Error parsing analytics data:", e);
+    // return;
+  }
 
-  // --- CONFIGURATION: Colors & Styles ---
+  // --- CONFIGURATION: Colors ---
   const colors = {
-    pm25: 'rgba(255, 99, 132, 0.8)',  // Red/Pink
-    pm10: 'rgba(54, 162, 235, 0.8)',  // Blue
-    pm25_fill: 'rgba(255, 99, 132, 0.2)',
-    pm10_fill: 'rgba(54, 162, 235, 0.2)',
-    aqi: ['#50f000', '#ffff00', '#ff9000', '#ff0000', '#990000'] // Green to Dark Red
+    pm25: 'rgba(255, 99, 132, 0.8)',
+    pm10: 'rgba(54, 162, 235, 0.8)',
+    aqi: ['#50f000', '#ffff00', '#ff9000', '#ff0000', '#99004c', '#730029'] // Good -> Extremely Poor
   };
 
   const commonOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'top', labels: { usePointStyle: true, font: { size: 11 } } },
-      tooltip: {
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        titleColor: '#333',
-        bodyColor: '#666',
-        borderColor: '#ddd',
-        borderWidth: 1
-      }
+      legend: { position: 'top', labels: { usePointStyle: true, font: { size: 11 } } }
     },
     scales: {
       y: { grid: { color: 'rgba(0,0,0,0.05)' } },
       x: { grid: { display: false } }
-    },
-    animation: {
-      duration: 1500,
-      easing: 'easeOutQuart'
     }
   };
 
   // --- CHART 1: Country Comparison (Bar Chart) ---
-  new Chart(document.getElementById('chart-country-comparison'), {
-    type: 'bar',
-    data: {
-      labels: ['Spain', 'Italy', 'Germany', 'Poland', 'Sweden', 'UK', 'Czech'],
-      datasets: [
-        {
-          label: 'PM2.5 Mean',
-          data: [12.5, 18.2, 14.1, 22.5, 6.8, 10.5, 19.1],
-          backgroundColor: colors.pm25,
-          borderRadius: 4
-        },
-        {
-          label: 'PM10 Mean',
-          data: [25.1, 32.5, 24.8, 38.2, 12.5, 18.2, 31.5],
-          backgroundColor: colors.pm10,
-          borderRadius: 4
-        }
-      ]
-    },
-    options: commonOptions
-  });
+  if(db.summary && document.getElementById('chart-country-comparison')) {
+    new Chart(document.getElementById('chart-country-comparison'), {
+      type: 'bar',
+      data: {
+        labels: db.summary.countries, // Dynamic Labels
+        datasets: [
+          {
+            label: 'PM2.5 Mean',
+            data: db.summary.pm25_mean, // Dynamic Data
+            backgroundColor: colors.pm25,
+            borderRadius: 4
+          },
+          {
+            label: 'PM10 Mean',
+            data: db.summary.pm10_mean, // Dynamic Data
+            backgroundColor: colors.pm10,
+            borderRadius: 4
+          }
+        ]
+      },
+      options: commonOptions
+    });
+  }
 
   // --- CHART 2: WHO Exceedance (Horizontal Bar) ---
-  new Chart(document.getElementById('chart-who-exceedance'), {
-    type: 'bar',
-    indexAxis: 'y',
-    data: {
-      labels: ['Poland', 'Italy', 'Czech', 'Spain', 'Germany', 'UK', 'Sweden'],
-      datasets: [{
-        label: '% Days > WHO Guideline (PM2.5)',
-        data: [45, 38, 35, 15, 12, 5, 1],
-        backgroundColor: (ctx) => {
-          const val = ctx.raw;
-          if (val > 30) return 'rgba(255, 0, 0, 0.7)';
-          if (val > 10) return 'rgba(255, 165, 0, 0.7)';
-          return 'rgba(75, 192, 192, 0.7)';
-        },
-        borderRadius: 4
-      }]
-    },
-    options: {
-      ...commonOptions,
-      scales: { x: { max: 100, title: { display: true, text: 'Percentage of Days' } } }
-    }
-  });
+  if(db.exceedance && document.getElementById('chart-who-exceedance')) {
+    new Chart(document.getElementById('chart-who-exceedance'), {
+      type: 'bar',
+      indexAxis: 'y',
+      data: {
+        labels: db.exceedance.countries, // Dynamic Labels
+        datasets: [{
+          label: '% Days > WHO Guideline (PM2.5)',
+          data: db.exceedance.pct, // Dynamic Data
+          backgroundColor: (ctx) => {
+            const val = ctx.raw;
+            if (val > 30) return 'rgba(255, 0, 0, 0.7)';
+            if (val > 10) return 'rgba(255, 165, 0, 0.7)';
+            return 'rgba(75, 192, 192, 0.7)';
+          },
+          borderRadius: 4
+        }]
+      },
+      options: {
+        ...commonOptions,
+        scales: { x: { max: 100, title: { display: true, text: 'Percentage of Days' } } }
+      }
+    });
+  }
 
-  // --- CHART 3: Seasonal Patterns (Line Chart) ---
-  new Chart(document.getElementById('chart-seasonal'), {
-    type: 'line',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      datasets: [
-        {
-          label: 'Poland (PM10)',
-          data: [55, 52, 45, 35, 25, 20, 18, 20, 30, 42, 50, 58],
-          borderColor: '#FF6384',
-          tension: 0.4,
-          fill: false
-        },
-        {
-          label: 'Italy (PM10)',
-          data: [45, 42, 38, 30, 25, 28, 32, 30, 28, 35, 40, 44],
-          borderColor: '#36A2EB',
-          tension: 0.4,
-          fill: false
-        },
-        {
-          label: 'Sweden (PM10)',
-          data: [15, 14, 12, 10, 8, 6, 5, 6, 8, 10, 12, 14],
-          borderColor: '#4BC0C0',
-          tension: 0.4,
-          fill: false
-        }
-      ]
-    },
-    options: commonOptions
-  });
+  // --- CHART 3: Seasonal Patterns ---
+  // Note: Your PySpark script calculates monthly_pd but currently only saves table3_seasonal_ratios.csv. 
+  // You need to ensure 'monthly_pd' is saved to CSV in your PySpark script to populate this dynamically.
+  // For now, this remains static or you must add `monthly_pd.to_csv(...)` in Python.
 
   // --- CHART 4 & 5: AQI Distribution (Doughnuts) ---
-  const aqiLabels = ['Good', 'Fair', 'Moderate', 'Poor', 'Very Poor'];
-  const aqiColors = ['#00e400', '#ffff00', '#ff7e00', '#ff0000', '#99004c'];
+  // Using table_seasonal_aqi.csv data
+  
+  const doughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'right' } },
+    cutout: '60%'
+  };
 
-  new Chart(document.getElementById('chart-aqi-winter'), {
-    type: 'doughnut',
-    data: {
-      labels: aqiLabels,
-      datasets: [{
-        data: [20, 30, 30, 15, 5],
-        backgroundColor: aqiColors,
-        borderWidth: 0
-      }]
-    },
-    options: { ...commonOptions, cutout: '60%' }
-  });
+  if(db.aqi_winter && document.getElementById('chart-aqi-winter')) {
+    new Chart(document.getElementById('chart-aqi-winter'), {
+      type: 'doughnut',
+      data: {
+        labels: db.aqi_labels,
+        datasets: [{
+          data: db.aqi_winter, // Dynamic Winter Data
+          backgroundColor: colors.aqi,
+          borderWidth: 0
+        }]
+      },
+      options: doughnutOptions
+    });
+  }
 
-  new Chart(document.getElementById('chart-aqi-summer'), {
-    type: 'doughnut',
-    data: {
-      labels: aqiLabels,
-      datasets: [{
-        data: [60, 25, 10, 5, 0],
-        backgroundColor: aqiColors,
-        borderWidth: 0
-      }]
-    },
-    options: { ...commonOptions, cutout: '60%' }
-  });
+  if(db.aqi_summer && document.getElementById('chart-aqi-summer')) {
+    new Chart(document.getElementById('chart-aqi-summer'), {
+      type: 'doughnut',
+      data: {
+        labels: db.aqi_labels,
+        datasets: [{
+          data: db.aqi_summer, // Dynamic Summer Data
+          backgroundColor: colors.aqi,
+          borderWidth: 0
+        }]
+      },
+      options: doughnutOptions
+    });
+  }
 
   // --- CHART 6: PM2.5/PM10 Ratio ---
-  new Chart(document.getElementById('chart-ratio'), {
-    type: 'bar',
-    data: {
-      labels: ['UK', 'DE', 'IT', 'PL'],
-      datasets: [{
-        label: 'Ratio',
-        data: [0.65, 0.58, 0.52, 0.75],
-        backgroundColor: 'rgba(153, 102, 255, 0.7)',
-        borderRadius: 4
-      }]
-    },
-    options: {
-      ...commonOptions,
-      scales: {
-        y: {
-          min: 0, max: 1,
-          title: { display: true, text: 'Ratio (PM2.5 / PM10)' }
+  if(db.ratio && document.getElementById('chart-ratio')) {
+    new Chart(document.getElementById('chart-ratio'), {
+      type: 'bar',
+      data: {
+        labels: db.ratio.countries,
+        datasets: [{
+          label: 'Ratio',
+          data: db.ratio.values,
+          backgroundColor: 'rgba(153, 102, 255, 0.7)',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        ...commonOptions,
+        scales: {
+          y: {
+            min: 0, max: 1.0,
+            title: { display: true, text: 'Ratio (PM2.5 / PM10)' }
+          }
         }
       }
-    }
-  });
-});
+    });
+  }
+  // --- NEW: Mortality Risk Chart ---
+  if(db.mortality && document.getElementById('chart-mortality')) {
+    new Chart(document.getElementById('chart-mortality'), {
+      type: 'bar',
+      data: {
+        labels: db.mortality.countries,
+        datasets: [{
+          label: '% Excess Risk',
+          data: db.mortality.risk,
+          backgroundColor: 'rgba(255, 99, 132, 0.6)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: commonOptions
+    });
+  }
+
+  // --- NEW: Yearly Trends Line Chart ---
+  if(db.yearly_trends && document.getElementById('chart-yearly')) {
+    const datasets = Object.keys(db.yearly_trends.data).map((country, i) => ({
+      label: country,
+      data: db.yearly_trends.data[country],
+      borderColor: `hsl(${i * 45}, 70%, 50%)`,
+      fill: false,
+      tension: 0.3
+    }));
+
+    new Chart(document.getElementById('chart-yearly'), {
+      type: 'line',
+      data: {
+        labels: db.yearly_trends.years,
+        datasets: datasets
+      },
+      options: commonOptions
+    });
+  }
+
+  // --- NEW: Weekend vs Weekday ---
+  if(db.weekend_effect && document.getElementById('chart-weekend')) {
+    console.log(db.weekend_effect);
+    const countries = Object.keys(db.weekend_effect);
+    const wknd = countries.map(c => db.weekend_effect[c].weekend);
+    const wkday = countries.map(c => db.weekend_effect[c].weekday);
+
+    new Chart(document.getElementById('chart-weekend'), {
+      type: 'bar',
+      data: {
+        labels: countries,
+        datasets: [
+          { label: 'Weekday', data: wkday, backgroundColor: '#36A2EB' },
+          { label: 'Weekend', data: wknd, backgroundColor: '#FFCE56' }
+        ]
+      },
+      options: commonOptions
+    });
+  }
+
+  // --- NEW: Populate Model Performance Table ---
+  if(db.model_performance && document.getElementById('table-model-perf')) {
+    const tbody = document.getElementById('table-model-perf');
+    db.model_performance.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${row.country}</strong></td>
+        <td>${parseFloat(row.rmse).toFixed(3)}</td>
+        <td>${parseFloat(row.mae).toFixed(3)}</td>
+        <td>${row.count}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+  
+  // --- (Don't forget to keep the Worst Episodes table logic from previous answer) ---
+  if(db.worst_episodes && document.getElementById('table-worst-episodes')) {
+      const tbody = document.getElementById('table-worst-episodes');
+      db.worst_episodes.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${row.date}</td>
+          <td><strong>${row.country}</strong></td>
+          <td>${parseFloat(row.avg_concentration).toFixed(1)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+  }
+}, 1000);

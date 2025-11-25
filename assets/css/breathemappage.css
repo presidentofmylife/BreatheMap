@@ -1,32 +1,31 @@
-/* ======== HERO WITH EUROPE IMAGE (no map) ======== */
+/* ==========================================================================
+   1. HERO / BANNER SECTION
+   ========================================================================== */
 #banner {
     position: relative;
     overflow: hidden;
 }
 
-/* Set your hero image(s) here */
 /* Fallback for all browsers */
 body.landing #banner,
 body.is-mobile.landing #banner {
-  background-image: url("/static/images/europe-hero.png");
-  /* keep the rest the same */
-  background-position: center 40%;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  height: 100vh;
+    background-image: url("/static/images/europe-hero.png");
+    background-position: center 40%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
 }
 
-/* If you still want image-set, you can keep it *after* the fallback */
+/* Image-set support */
 @supports (background-image: image-set(url("/static/images/europe-hero.png") type("image/png"))) {
-  body.landing #banner,
-  body.is-mobile.landing #banner {
-    background-image: image-set(url("/static/images/europe-hero.png") type("image/png"));
-  }
+    body.landing #banner,
+    body.is-mobile.landing #banner {
+        background-image: image-set(url("/static/images/europe-hero.png") type("image/png"));
+    }
 }
 
-
-/* Darken + subtle sky tint so text is legible */
+/* Dark overlay */
 #banner::before {
     content: "";
     position: absolute;
@@ -50,13 +49,35 @@ body.is-mobile.landing #banner {
     }
 }
 
-/* ======== POLLUTANT MAP SECTION ======== */
+/* Adjust background position for mobile devices */
+@media (max-width: 736px) {
+    body.landing #banner,
+    body.is-mobile.landing #banner {
+        background-position: center 60%;
+    }
+}
+
+/* HTML5 UP icon fix */
+#banner .icons.major .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ==========================================================================
+   2. POLLUTANT MAP SECTION
+   ========================================================================== */
 #air {
-    padding: 1rem;  
+    padding: 1rem;
 }
 
 .wrapper.style2 {
     height: 100vh;
+}
+
+#map-header {
+    margin-bottom: 0;
 }
 
 #air .map-wrap {
@@ -72,7 +93,7 @@ body.is-mobile.landing #banner {
     width: 100%;
 }
 
-/* Controls + legend (scoped) */
+/* --- Controls --- */
 .aq-controls {
     position: absolute;
     top: 10px;
@@ -101,12 +122,13 @@ body.is-mobile.landing #banner {
     font-size: 12px;
 }
 
+/* --- Legend --- */
 .aq-legend {
     position: absolute;
     bottom: 10px;
     left: 10px;
     z-index: 2;
-    /* background: rgba(255, 255, 255, .98);   */
+    /* background: rgba(255, 255, 255, .98); */
     backdrop-filter: blur(10px);
     border-radius: 8px;
     padding: 8px 10px;
@@ -120,8 +142,10 @@ body.is-mobile.landing #banner {
 .aq-legend .row {
     display: flex;
     align-items: center;
+    justify-content: space-between; /* Restored from original */
     margin: 2px 0;
     font-size: 11px;
+    width: 100%;
 }
 
 .aq-legend .swatch {
@@ -132,11 +156,10 @@ body.is-mobile.landing #banner {
     flex-shrink: 0;
 }
 
-/* Keep HTML5 UP icon sizes consistent */
-.icons.major .icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+/* Truncate long legend text */
+.aq-legend .row span:nth-child(2) {
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 /* Small screens: make map a bit shorter */
@@ -146,7 +169,10 @@ body.is-mobile.landing #banner {
     }
 }
 
-/* --- Responsive controls & legend for small screens --- */
+
+/* ==========================================================================
+   3. RESPONSIVE MAP CONTROLS & VARIABLES
+   ========================================================================== */
 :root {
     --panel-font: clamp(11px, 1.6vw, 14px);
     --panel-pad: clamp(6px, 1.2vw, 10px);
@@ -171,7 +197,6 @@ body.is-mobile.landing #banner {
     flex-wrap: wrap;
     left: 10px;
     right: auto;
-    /* max-width: min(500px, calc(100% - 20px)); */
 }
 
 #air .aq-controls label {
@@ -221,6 +246,12 @@ body.is-mobile.landing #banner {
         right: 8px;
         bottom: 8px;
     }
+    
+    /* MapLibre nav position */
+    .maplibregl-ctrl-top-right {
+        right: 8px;
+        top: 54px;
+    }
 }
 
 /* <= 420px: two-column controls; button on its own row */
@@ -237,17 +268,16 @@ body.is-mobile.landing #banner {
         flex: 1 1 100%;
         order: 3;
     }
-}
-
-/* Optional: give MapLibre nav some breathing room on mobile */
-@media (max-width: 640px) {
-    .maplibregl-ctrl-top-right {
-        right: 8px;
-        top: 54px;
+    
+    #air .aq-legend {
+        max-width: 100px !important;
     }
 }
 
-/* ======== TIME SLIDER ======== */
+
+/* ==========================================================================
+   4. TIME SLIDER
+   ========================================================================== */
 .time-slider-container {
     position: absolute;
     bottom: 60px;
@@ -383,7 +413,7 @@ body.is-mobile.landing #banner {
     background: #2b8cbe;
 }
 
-/* Responsive time slider - moves to right and shrinks */
+/* Responsive time slider */
 @media (max-width: 980px) {
     .time-slider-container {
         left: auto;
@@ -394,33 +424,12 @@ body.is-mobile.landing #banner {
         padding: 10px 14px;
         bottom: 10px;
     }
-
-    .time-display {
-        font-size: 13px;
-    }
-
-    .time-breadcrumb {
-        font-size: 10px;
-    }
-
-    .time-btn {
-        padding: 5px 8px;
-        font-size: 11px;
-    }
-
-    .time-labels {
-        font-size: 9px;
-    }
-
-    .time-slider::-webkit-slider-thumb {
-        width: 14px;
-        height: 14px;
-    }
-
-    .time-slider::-moz-range-thumb {
-        width: 14px;
-        height: 14px;
-    }
+    .time-display { font-size: 13px; }
+    .time-breadcrumb { font-size: 10px; }
+    .time-btn { padding: 5px 8px; font-size: 11px; }
+    .time-labels { font-size: 9px; }
+    .time-slider::-webkit-slider-thumb { width: 14px; height: 14px; }
+    .time-slider::-moz-range-thumb { width: 14px; height: 14px; }
 }
 
 @media (max-width: 640px) {
@@ -431,55 +440,16 @@ body.is-mobile.landing #banner {
         padding: 8px 10px;
         bottom: 8px;
     }
-
-    .time-header {
-        margin-bottom: 6px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 3px;
-    }
-
-    .time-display {
-        font-size: 11px;
-    }
-
-    .time-breadcrumb {
-        font-size: 9px;
-    }
-
-    .slider-wrapper {
-        margin: 6px 0;
-    }
-
-    .time-slider {
-        height: 4px;
-    }
-
-    .time-slider::-webkit-slider-thumb {
-        width: 12px;
-        height: 12px;
-    }
-
-    .time-slider::-moz-range-thumb {
-        width: 12px;
-        height: 12px;
-    }
-
-    .time-labels {
-        font-size: 8px;
-        margin-top: 2px;
-    }
-
-    .time-controls {
-        gap: 4px;
-        margin-top: 6px;
-    }
-
-    .time-btn {
-        padding: 4px 6px;
-        font-size: 9px;
-        border-radius: 4px;
-    }
+    .time-header { margin-bottom: 6px; flex-direction: column; align-items: flex-start; gap: 3px; }
+    .time-display { font-size: 11px; }
+    .time-breadcrumb { font-size: 9px; }
+    .slider-wrapper { margin: 6px 0; }
+    .time-slider { height: 4px; }
+    .time-slider::-webkit-slider-thumb { width: 12px; height: 12px; }
+    .time-slider::-moz-range-thumb { width: 12px; height: 12px; }
+    .time-labels { font-size: 8px; margin-top: 2px; }
+    .time-controls { gap: 4px; margin-top: 6px; }
+    .time-btn { padding: 4px 6px; font-size: 9px; border-radius: 4px; }
 }
 
 @media (max-width: 480px) {
@@ -488,106 +458,19 @@ body.is-mobile.landing #banner {
         max-width: 160px;
         padding: 6px 8px;
     }
-
-    .time-display {
-        font-size: 10px;
-    }
-
-    .time-breadcrumb {
-        font-size: 8px;
-    }
-
-    .time-labels {
-        font-size: 7px;
-    }
-
-    .time-btn {
-        padding: 3px 4px;
-        font-size: 8px;
-    }
+    .time-display { font-size: 10px; }
+    .time-breadcrumb { font-size: 8px; }
+    .time-labels { font-size: 7px; }
+    .time-btn { padding: 3px 4px; font-size: 8px; }
 }
 
-/* === Analytics charts === */
-#analytics .charts-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-}
 
-#analytics .chart-card {
-    background: #fff;
-    color: #2E3842;
-    border-radius: 12px;
-    padding: 1rem 1rem 0.5rem;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
-}
-
-#analytics .chart-card h3 {
-    margin: 0 0 .5rem 0;
-    color: #2E3842;
-}
-
-#analytics .chart-wrap {
-    position: relative;
-    height: 220px;
-}
-
-@media (max-width: 980px) {
-    #analytics .charts-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    #analytics .chart-wrap {
-        height: 200px;
-    }
-}
-
-@media (max-width: 640px) {
-    #analytics .charts-grid {
-        grid-template-columns: 1fr;
-    }
-
-    #analytics .chart-wrap {
-        height: 180px;
-    }
-}
-
-/* Adjust background position for mobile devices */
-@media (max-width: 736px) {
-
-    body.landing #banner,
-    body.is-mobile.landing #banner {
-        background-position: center 60%;
-    }
-}
-
-/* Fix MapLibre icon override */
-#banner .icons.major .icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Legend shrink behavior */
-#air .aq-legend .row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    width: 100%;
-}
-
-#air .aq-legend .row span:nth-child(2) {
-    white-space: nowrap;
-    /* overflow: hidden; */
-    text-overflow: ellipsis;
-}
-
-/* Mobile max width */
-@media (max-width: 480px) {
-    #air .aq-legend {
-        max-width: 100px !important;
-    }
+/* ==========================================================================
+   5. ANALYTICS & CHARTS SECTION (Responsive Fix)
+   ========================================================================== */
+#analytics {
+    padding: 3rem 1.5rem;
+    overflow: hidden; /* Prevents container from stretching page width */
 }
 
 /* Grid Layouts */
@@ -595,14 +478,15 @@ body.is-mobile.landing #banner {
     display: grid;
     gap: 2rem;
     margin-bottom: 2rem;
+    width: 100%;
 }
 
 .two-columns {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .three-columns {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .one-column {
@@ -617,6 +501,10 @@ body.is-mobile.landing #banner {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease;
     border: 1px solid rgba(0, 0, 0, 0.05);
+    
+    /* CRITICAL FIX FOR GRID OVERFLOW: */
+    min-width: 0; 
+    word-wrap: break-word;
 }
 
 .chart-card:hover {
@@ -626,7 +514,7 @@ body.is-mobile.landing #banner {
 
 .chart-card h3 {
     font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.5rem 0;
     color: #2E3842;
     font-weight: 700;
 }
@@ -641,16 +529,16 @@ body.is-mobile.landing #banner {
 .chart-wrap {
     position: relative;
     height: 300px;
-    /* Standard Height */
     width: 100%;
 }
 
 .chart-wrap.wide {
     height: 350px;
-    /* Taller for detailed line charts */
 }
 
-/* Responsive */
+/* --- Analytics Media Queries --- */
+
+/* Tablet (Max width 980px) */
 @media (max-width: 980px) {
     .two-columns,
     .three-columns {
@@ -662,6 +550,27 @@ body.is-mobile.landing #banner {
     }
 }
 
-#map-header {
-    margin: 0;
+/* Mobile (Max width 640px) */
+@media (max-width: 640px) {
+    #analytics {
+        padding: 1.5rem 0.5rem;
+    }
+
+    .charts-grid {
+        gap: 1rem;
+    }
+
+    .chart-card {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .chart-card h3 {
+        font-size: 1rem;
+    }
+
+    .chart-wrap, 
+    .chart-wrap.wide {
+        height: 220px;
+    }
 }

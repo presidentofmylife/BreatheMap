@@ -26,9 +26,13 @@
     <section id="banner">
       <div class="inner">
         <h2>BreatheMap</h2>
-        <p>Map of pollution across Europe<br /></p>
+        <p>
+          Map of pollution across Europe<br />
+        </p>
         <ul class="actions special">
-          <li><a href="#air" class="button primary scrolly">Explore Air Quality</a></li>
+          <li>
+            <a href="#air" class="button primary scrolly">Explore Air Quality</a>
+          </li>
         </ul>
       </div>
       <a href="#air" class="more scrolly">Learn More</a>
@@ -37,7 +41,7 @@
     <!-- Air Quality MAP + Analytics -->
     <section id="air" class="wrapper alt style2">
       <header class="major align-center" id="map-header">
-          <h2>Air Quality Across European Countries</h2>
+        <h2>Air Quality Across European Countries</h2>
       </header>
       <div class="inner">
         <div class="map-wrap">
@@ -46,16 +50,14 @@
           <!-- UI -->
           <div class="aq-controls">
             <label>
-              Metric:
-              <select id="aq-metric">
+              Metric:<select id="aq-metric">
                 <option value="pm10">PM10 (µg/m³)</option>
                 <option value="no2">NO₂ (µg/m³)</option>
                 <option value="o3">O₃ MDA8 (µg/m³)</option>
               </select>
             </label>
             <label>
-              Scale:
-              <select id="aq-scale">
+              Scale:<select id="aq-scale">
                 <option value="fixed">Fixed thresholds</option>
                 <option value="quantile">Quantiles (6 classes)</option>
               </select>
@@ -73,7 +75,7 @@
               </div>
             </div>
             <div class="slider-wrapper">
-              <input type="range" class="time-slider" id="time-slider" min="0" max="4" value="4" step="1">
+              <input type="range" class="time-slider" id="time-slider" min="0" max="4" value="4" step="1" />
               <div class="time-labels" id="time-labels">
                 <span>2020</span>
                 <span>2021</span>
@@ -94,53 +96,117 @@
     <section id="analytics" class="wrapper style5">
       <div class="inner">
         <header class="major align-center">
-          <h2>Air Quality Analytics</h2>
-          <p>Deep dive into pollutant concentrations, seasonal trends, and health risks.</p>
+          <h2>Air Quality Analytics Dashboard</h2>
+          <p>Comprehensive analysis of pollutant levels, trends, and health risks.</p>
         </header>
 
         <div class="charts-grid two-columns">
           <div class="chart-card">
-            <h3>Mean Concentrations by Country</h3>
-            <p class="chart-desc">Comparing average PM2.5 and PM10 levels (µg/m³).</p>
-            <div class="chart-wrap"><canvas id="chart-country-comparison"></canvas></div>
+            <h3>1. Mean Concentrations (PM2.5 vs PM10)</h3>
+            <p class="chart-desc">Average pollution levels compared across countries.</p>
+            <div class="chart-wrap"><canvas id="chart-mean"></canvas></div>
           </div>
           <div class="chart-card">
-            <h3>WHO Guideline Exceedance</h3>
-            <p class="chart-desc">Percentage of days exceeding WHO safety limits.</p>
-            <div class="chart-wrap"><canvas id="chart-who-exceedance"></canvas></div>
+            <h3>2. WHO Compliance</h3>
+            <p class="chart-desc">Percentage of days meeting WHO safety guidelines (PM2.5).</p>
+            <div class="chart-wrap"><canvas id="chart-compliance"></canvas></div>
           </div>
         </div>
 
-        <div class="charts-grid one-column">
+        <div class="charts-grid two-columns">
           <div class="chart-card">
-            <h3>Seasonal Patterns (Monthly)</h3>
-            <p class="chart-desc">Average concentrations aggregated by month across all years.</p>
-            <div class="chart-wrap wide"><canvas id="chart-seasonal"></canvas></div>
+            <h3>3. Health Risk Days</h3>
+            <p class="chart-desc">% of days classified as "Poor" AQI or worse.</p>
+            <div class="chart-wrap"><canvas id="chart-risk"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>4. Excess Mortality Risk</h3>
+            <p class="chart-desc">Estimated increased risk due to PM2.5 exposure.</p>
+            <div class="chart-wrap"><canvas id="chart-mortality"></canvas></div>
           </div>
         </div>
 
         <div class="charts-grid three-columns">
           <div class="chart-card">
-            <h3>AQI Categories (Winter)</h3>
+            <h3>5. AQI (Winter)</h3>
             <div class="chart-wrap"><canvas id="chart-aqi-winter"></canvas></div>
           </div>
           <div class="chart-card">
-            <h3>AQI Categories (Summer)</h3>
+            <h3>6. AQI (Summer)</h3>
             <div class="chart-wrap"><canvas id="chart-aqi-summer"></canvas></div>
           </div>
           <div class="chart-card">
-            <h3>PM2.5 / PM10 Ratio</h3>
+            <h3>7. PM2.5 / PM10 Ratio</h3>
+            <p class="chart-desc">>0.5 suggests combustion sources.</p>
             <div class="chart-wrap"><canvas id="chart-ratio"></canvas></div>
           </div>
         </div>
+
+        <div class="charts-grid two-columns">
+          <div class="chart-card">
+            <h3>8. Monthly Patterns (Seasonality)</h3>
+            <p class="chart-desc">PM10 variation throughout the year.</p>
+            <div class="chart-wrap"><canvas id="chart-monthly"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>9. Yearly Trends</h3>
+            <p class="chart-desc">Evolution of Average AQI over time.</p>
+            <div class="chart-wrap"><canvas id="chart-yearly"></canvas></div>
+          </div>
+        </div>
+
+        <div class="charts-grid two-columns">
+          <div class="chart-card">
+            <h3>10. Weekend vs Weekday</h3>
+            <p class="chart-desc">Is air quality better on weekends?</p>
+            <div class="chart-wrap"><canvas id="chart-weekend"></canvas></div>
+          </div>
+
+          <div class="chart-card" style="overflow-x:auto;">
+            <h3>🚨 10 Worst Episodes Recorded</h3>
+            <table class="alt">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Country</th>
+                  <th>PM2.5</th>
+                  <th>AQI</th>
+                </tr>
+              </thead>
+              <tbody id="table-worst-episodes"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="charts-grid one-column">
+          <div class="chart-card" style="overflow-x:auto;">
+            <h3>🤖 Model Prediction Performance (Test Set)</h3>
+            <table class="alt">
+              <thead>
+                <tr>
+                  <th>Country</th>
+                  <th>RMSE (Error)</th>
+                  <th>MAE (Avg Error)</th>
+                  <th>Records</th>
+                </tr>
+              </thead>
+              <tbody id="table-model-perf"></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </section>
 
     <!-- Footer -->
     <footer id="footer">
       <ul class="icons">
-        <li><a href="#" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
-        <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+        <li>
+          <a href="#" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a>
+        </li>
+        <li>
+          <a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a>
+        </li>
       </ul>
       <ul class="copyright">
         <li>&copy; BreatheMap</li>
@@ -161,7 +227,12 @@
   <script src="{{ url_for('static', filename='js/util.js') }}"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
+  <script>
+    // Pass the Flask data to a global JS variable
+    window.analyticsData = {{ analytics_data | tojson }};
+  </script>
   <!-- Page-specific JS -->
   <script src="{{ url_for('static', filename='js/breathemap_app.js') }}"></script>
 </body>
+
 </html>

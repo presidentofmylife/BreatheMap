@@ -1,0 +1,493 @@
+country,pollutant_name,prev_aqi,aqi_category,count
+CZECH,PM2.5,Moderate,Poor,2171
+CZECH,PM2.5,Poor,Moderate,2114
+CZECH,PM2.5,Poor,Poor,1839
+CZECH,PM2.5,Moderate,Moderate,21396
+CZECH,PM2.5,Moderate,Good,717
+CZECH,PM2.5,Good,Fair,1017
+CZECH,PM2.5,Fair,Fair,7496
+CZECH,PM2.5,Fair,Moderate,5016
+CZECH,PM2.5,Moderate,Fair,4874
+CZECH,PM2.5,Fair,Good,923
+CZECH,PM2.5,Good,Moderate,648
+CZECH,PM2.5,Good,Good,238
+CZECH,PM2.5,Good,Poor,85
+CZECH,PM2.5,Moderate,Extremely Poor,67
+CZECH,PM2.5,Extremely Poor,Moderate,57
+CZECH,PM2.5,Poor,Fair,215
+CZECH,PM2.5,Fair,Poor,184
+CZECH,PM2.5,Extremely Poor,Extremely Poor,76
+CZECH,PM2.5,Moderate,Very Poor,234
+CZECH,PM2.5,Very Poor,Extremely Poor,72
+CZECH,PM2.5,Extremely Poor,Poor,86
+CZECH,PM2.5,Poor,Extremely Poor,77
+CZECH,PM2.5,Very Poor,Poor,336
+CZECH,PM2.5,Extremely Poor,Very Poor,67
+CZECH,PM2.5,Very Poor,Very Poor,242
+CZECH,PM2.5,Very Poor,Moderate,228
+CZECH,PM2.5,Poor,Very Poor,355
+CZECH,PM2.5,Poor,Good,101
+CZECH,PM2.5,Good,Very Poor,14
+CZECH,PM2.5,Fair,Very Poor,19
+CZECH,PM2.5,Very Poor,Fair,31
+CZECH,PM2.5,Very Poor,Good,22
+CZECH,PM2.5,Extremely Poor,Fair,12
+CZECH,PM2.5,Good,Extremely Poor,4
+CZECH,PM2.5,Extremely Poor,Good,5
+CZECH,PM2.5,Fair,Extremely Poor,7
+ITALY,PM2.5,Fair,Very Poor,1599
+ITALY,PM2.5,Very Poor,Very Poor,3621
+ITALY,PM2.5,Very Poor,Poor,6636
+ITALY,PM2.5,Poor,Poor,23268
+ITALY,PM2.5,Poor,Very Poor,6619
+ITALY,PM2.5,Very Poor,Extremely Poor,770
+ITALY,PM2.5,Extremely Poor,Poor,1183
+ITALY,PM2.5,Poor,Extremely Poor,1228
+ITALY,PM2.5,Extremely Poor,Very Poor,810
+ITALY,PM2.5,Poor,Moderate,43672
+ITALY,PM2.5,Moderate,Very Poor,8569
+ITALY,PM2.5,Very Poor,Moderate,8592
+ITALY,PM2.5,Moderate,Poor,43742
+ITALY,PM2.5,Moderate,Extremely Poor,1457
+ITALY,PM2.5,Moderate,Moderate,366972
+ITALY,PM2.5,Poor,Fair,8905
+ITALY,PM2.5,Fair,Moderate,110986
+ITALY,PM2.5,Fair,Extremely Poor,239
+ITALY,PM2.5,Extremely Poor,Extremely Poor,424
+ITALY,PM2.5,Extremely Poor,Moderate,1464
+ITALY,PM2.5,Fair,Poor,8796
+ITALY,PM2.5,Extremely Poor,Fair,239
+ITALY,PM2.5,Moderate,Fair,110888
+ITALY,PM2.5,Very Poor,Fair,1605
+ITALY,PM2.5,Fair,Fair,101240
+ITALY,PM2.5,Moderate,Good,7822
+ITALY,PM2.5,Good,Poor,748
+ITALY,PM2.5,Good,Extremely Poor,17
+ITALY,PM2.5,Good,Moderate,7765
+ITALY,PM2.5,Good,Fair,9027
+ITALY,PM2.5,Good,Very Poor,128
+ITALY,PM2.5,Poor,Good,681
+ITALY,PM2.5,Fair,Good,9045
+ITALY,PM2.5,Good,Good,1431
+ITALY,PM2.5,Very Poor,Good,122
+ITALY,PM2.5,Extremely Poor,Good,15
+POLAND,PM10,Moderate,Moderate,161635
+POLAND,PM10,Moderate,Poor,18231
+POLAND,PM10,Poor,Fair,2961
+POLAND,PM10,Fair,Moderate,82414
+POLAND,PM10,Moderate,Fair,82406
+POLAND,PM10,Fair,Fair,252231
+POLAND,PM10,Fair,Poor,2996
+POLAND,PM10,Poor,Moderate,18231
+POLAND,PM10,Moderate,Good,2499
+POLAND,PM10,Good,Moderate,2509
+POLAND,PM10,Moderate,Extremely Poor,914
+POLAND,PM10,Extremely Poor,Moderate,928
+POLAND,PM10,Fair,Very Poor,434
+POLAND,PM10,Very Poor,Moderate,2890
+POLAND,PM10,Moderate,Very Poor,2923
+POLAND,PM10,Very Poor,Fair,469
+POLAND,PM10,Poor,Poor,8823
+POLAND,PM10,Fair,Extremely Poor,129
+POLAND,PM10,Extremely Poor,Fair,150
+POLAND,PM10,Good,Fair,16683
+POLAND,PM10,Fair,Good,16696
+POLAND,PM10,Good,Good,4766
+POLAND,PM10,Poor,Good,113
+POLAND,PM10,Good,Poor,122
+POLAND,PM10,Very Poor,Good,22
+POLAND,PM10,Poor,Very Poor,2208
+POLAND,PM10,Very Poor,Poor,2195
+POLAND,PM10,Poor,Extremely Poor,849
+POLAND,PM10,Extremely Poor,Very Poor,504
+POLAND,PM10,Very Poor,Extremely Poor,509
+POLAND,PM10,Very Poor,Very Poor,913
+POLAND,PM10,Extremely Poor,Poor,819
+POLAND,PM10,Extremely Poor,Extremely Poor,475
+POLAND,PM10,Good,Extremely Poor,8
+POLAND,PM10,Good,Very Poor,16
+POLAND,PM10,Extremely Poor,Good,8
+POLAND,PM2.5,Moderate,Extremely Poor,674
+POLAND,PM2.5,Extremely Poor,Poor,1329
+POLAND,PM2.5,Poor,Poor,15610
+POLAND,PM2.5,Poor,Extremely Poor,1310
+POLAND,PM2.5,Extremely Poor,Extremely Poor,1114
+POLAND,PM2.5,Extremely Poor,Moderate,611
+POLAND,PM2.5,Moderate,Moderate,124871
+POLAND,PM2.5,Moderate,Poor,16475
+POLAND,PM2.5,Poor,Moderate,16439
+POLAND,PM2.5,Poor,Very Poor,4572
+POLAND,PM2.5,Very Poor,Moderate,2670
+POLAND,PM2.5,Extremely Poor,Very Poor,1231
+POLAND,PM2.5,Very Poor,Very Poor,2858
+POLAND,PM2.5,Very Poor,Poor,4502
+POLAND,PM2.5,Moderate,Very Poor,2528
+POLAND,PM2.5,Very Poor,Fair,84
+POLAND,PM2.5,Fair,Moderate,21613
+POLAND,PM2.5,Moderate,Fair,21667
+POLAND,PM2.5,Fair,Poor,844
+POLAND,PM2.5,Poor,Fair,826
+POLAND,PM2.5,Fair,Fair,13724
+POLAND,PM2.5,Moderate,Good,532
+POLAND,PM2.5,Good,Moderate,543
+POLAND,PM2.5,Fair,Good,505
+POLAND,PM2.5,Fair,Very Poor,116
+POLAND,PM2.5,Very Poor,Extremely Poor,1193
+POLAND,PM2.5,Good,Poor,21
+POLAND,PM2.5,Extremely Poor,Good,2
+POLAND,PM2.5,Good,Extremely Poor,2
+POLAND,PM2.5,Fair,Extremely Poor,17
+POLAND,PM2.5,Extremely Poor,Fair,23
+POLAND,PM2.5,Poor,Good,24
+POLAND,PM2.5,Good,Very Poor,4
+POLAND,PM2.5,Good,Fair,495
+POLAND,PM2.5,Good,Good,29
+POLAND,PM2.5,Very Poor,Good,2
+SPAIN,PM10,Good,Fair,30940
+SPAIN,PM10,Fair,Moderate,51204
+SPAIN,PM10,Moderate,Moderate,53233
+SPAIN,PM10,Moderate,Fair,51125
+SPAIN,PM10,Fair,Good,30863
+SPAIN,PM10,Good,Good,17097
+SPAIN,PM10,Moderate,Good,7689
+SPAIN,PM10,Fair,Fair,151871
+SPAIN,PM10,Good,Moderate,7640
+SPAIN,PM10,Good,Poor,183
+SPAIN,PM10,Poor,Moderate,1237
+SPAIN,PM10,Moderate,Poor,1248
+SPAIN,PM10,Poor,Fair,764
+SPAIN,PM10,Fair,Poor,759
+SPAIN,PM10,Poor,Poor,374
+SPAIN,PM10,Poor,Good,202
+SPAIN,PM10,Good,Very Poor,28
+SPAIN,PM10,Very Poor,Very Poor,22
+SPAIN,PM10,Very Poor,Good,26
+SPAIN,PM10,Moderate,Very Poor,127
+SPAIN,PM10,Very Poor,Fair,85
+SPAIN,PM10,Fair,Extremely Poor,56
+SPAIN,PM10,Extremely Poor,Fair,45
+SPAIN,PM10,Fair,Very Poor,76
+SPAIN,PM10,Very Poor,Moderate,105
+SPAIN,PM10,Good,Extremely Poor,8
+SPAIN,PM10,Extremely Poor,Moderate,59
+SPAIN,PM10,Very Poor,Poor,66
+SPAIN,PM10,Moderate,Extremely Poor,56
+SPAIN,PM10,Extremely Poor,Good,18
+SPAIN,PM10,Poor,Extremely Poor,13
+SPAIN,PM10,Poor,Very Poor,52
+SPAIN,PM10,Extremely Poor,Extremely Poor,24
+SPAIN,PM10,Extremely Poor,Very Poor,10
+SPAIN,PM10,Very Poor,Extremely Poor,11
+SPAIN,PM10,Extremely Poor,Poor,12
+SWEDEN,PM10,Good,Fair,8604
+SWEDEN,PM10,Fair,Fair,20546
+SWEDEN,PM10,Fair,Good,8643
+SWEDEN,PM10,Good,Good,7418
+SWEDEN,PM10,Good,Moderate,1311
+SWEDEN,PM10,Moderate,Fair,4404
+SWEDEN,PM10,Moderate,Good,1272
+SWEDEN,PM10,Fair,Moderate,4341
+SWEDEN,PM10,Moderate,Moderate,2796
+SWEDEN,PM10,Good,Poor,124
+SWEDEN,PM10,Poor,Fair,378
+SWEDEN,PM10,Poor,Good,131
+SWEDEN,PM10,Good,Extremely Poor,20
+SWEDEN,PM10,Extremely Poor,Good,15
+SWEDEN,PM10,Fair,Poor,407
+SWEDEN,PM10,Moderate,Extremely Poor,53
+SWEDEN,PM10,Extremely Poor,Fair,47
+SWEDEN,PM10,Moderate,Very Poor,80
+SWEDEN,PM10,Very Poor,Moderate,81
+SWEDEN,PM10,Moderate,Poor,332
+SWEDEN,PM10,Poor,Moderate,353
+SWEDEN,PM10,Fair,Very Poor,88
+SWEDEN,PM10,Fair,Extremely Poor,41
+SWEDEN,PM10,Extremely Poor,Poor,10
+SWEDEN,PM10,Very Poor,Good,37
+SWEDEN,PM10,Very Poor,Fair,88
+SWEDEN,PM10,Good,Very Poor,40
+SWEDEN,PM10,Poor,Poor,65
+SWEDEN,PM10,Extremely Poor,Moderate,55
+SWEDEN,PM10,Poor,Extremely Poor,11
+SWEDEN,PM10,Very Poor,Poor,16
+SWEDEN,PM10,Poor,Very Poor,16
+SWEDEN,PM10,Very Poor,Very Poor,4
+SWEDEN,PM10,Very Poor,Extremely Poor,6
+SWEDEN,PM10,Extremely Poor,Very Poor,4
+SWEDEN,PM2.5,Moderate,Fair,1188
+SWEDEN,PM2.5,Fair,Good,3303
+SWEDEN,PM2.5,Good,Fair,3367
+SWEDEN,PM2.5,Fair,Fair,6189
+SWEDEN,PM2.5,Good,Good,2783
+SWEDEN,PM2.5,Fair,Moderate,1249
+SWEDEN,PM2.5,Moderate,Moderate,867
+SWEDEN,PM2.5,Moderate,Poor,45
+SWEDEN,PM2.5,Poor,Fair,44
+SWEDEN,PM2.5,Moderate,Good,511
+SWEDEN,PM2.5,Good,Moderate,452
+SWEDEN,PM2.5,Fair,Poor,47
+SWEDEN,PM2.5,Poor,Moderate,41
+SWEDEN,PM2.5,Poor,Poor,10
+SWEDEN,PM2.5,Poor,Very Poor,1
+SWEDEN,PM2.5,Very Poor,Moderate,1
+SWEDEN,PM2.5,Poor,Good,13
+SWEDEN,PM2.5,Good,Poor,7
+BELGIUM,PM2.5,Poor,Poor,582
+BELGIUM,PM2.5,Poor,Moderate,341
+BELGIUM,PM2.5,Moderate,Moderate,7176
+BELGIUM,PM2.5,Moderate,Poor,352
+BELGIUM,PM2.5,Moderate,Fair,1279
+BELGIUM,PM2.5,Fair,Moderate,1281
+BELGIUM,PM2.5,Fair,Fair,3821
+BELGIUM,PM2.5,Poor,Very Poor,33
+BELGIUM,PM2.5,Very Poor,Very Poor,51
+BELGIUM,PM2.5,Very Poor,Poor,26
+BELGIUM,PM2.5,Very Poor,Moderate,10
+BELGIUM,PM2.5,Very Poor,Extremely Poor,5
+BELGIUM,PM2.5,Extremely Poor,Very Poor,6
+BELGIUM,PM2.5,Poor,Extremely Poor,3
+BELGIUM,PM2.5,Extremely Poor,Moderate,1
+BELGIUM,PM2.5,Poor,Fair,7
+BELGIUM,PM2.5,Extremely Poor,Extremely Poor,4
+BELGIUM,PM2.5,Fair,Good,51
+BELGIUM,PM2.5,Good,Fair,50
+BELGIUM,PM2.5,Fair,Poor,4
+BELGIUM,PM2.5,Moderate,Good,2
+BELGIUM,PM2.5,Extremely Poor,Poor,1
+BELGIUM,PM2.5,Good,Good,16
+BELGIUM,PM2.5,Good,Moderate,3
+BELGIUM,PM2.5,Moderate,Very Poor,3
+BELGIUM,PM2.5,Fair,Very Poor,1
+BELGIUM,PM2.5,Very Poor,Fair,2
+CZECH,PM10,Good,Fair,11001
+CZECH,PM10,Fair,Moderate,11978
+CZECH,PM10,Moderate,Fair,12001
+CZECH,PM10,Moderate,Moderate,19705
+CZECH,PM10,Fair,Fair,69202
+CZECH,PM10,Fair,Good,11034
+CZECH,PM10,Good,Moderate,1252
+CZECH,PM10,Good,Good,11846
+CZECH,PM10,Moderate,Good,1237
+CZECH,PM10,Moderate,Very Poor,104
+CZECH,PM10,Very Poor,Moderate,106
+CZECH,PM10,Moderate,Poor,993
+CZECH,PM10,Poor,Moderate,1004
+CZECH,PM10,Very Poor,Fair,33
+CZECH,PM10,Fair,Poor,243
+CZECH,PM10,Poor,Fair,252
+CZECH,PM10,Moderate,Extremely Poor,42
+CZECH,PM10,Extremely Poor,Moderate,37
+CZECH,PM10,Fair,Very Poor,34
+CZECH,PM10,Very Poor,Very Poor,36
+CZECH,PM10,Very Poor,Poor,92
+CZECH,PM10,Poor,Extremely Poor,15
+CZECH,PM10,Poor,Poor,495
+CZECH,PM10,Extremely Poor,Extremely Poor,5
+CZECH,PM10,Extremely Poor,Poor,14
+CZECH,PM10,Poor,Very Poor,87
+CZECH,PM10,Good,Poor,53
+CZECH,PM10,Very Poor,Extremely Poor,3
+CZECH,PM10,Good,Very Poor,9
+CZECH,PM10,Extremely Poor,Very Poor,5
+CZECH,PM10,Poor,Good,37
+CZECH,PM10,Fair,Extremely Poor,7
+CZECH,PM10,Extremely Poor,Fair,10
+CZECH,PM10,Good,Extremely Poor,2
+CZECH,PM10,Very Poor,Good,5
+CZECH,PM10,Extremely Poor,Good,3
+GERMANY,PM10,Fair,Moderate,49776
+GERMANY,PM10,Moderate,Fair,49787
+GERMANY,PM10,Fair,Fair,285998
+GERMANY,PM10,Moderate,Moderate,61174
+GERMANY,PM10,Moderate,Very Poor,138
+GERMANY,PM10,Very Poor,Moderate,146
+GERMANY,PM10,Moderate,Good,4058
+GERMANY,PM10,Good,Moderate,4052
+GERMANY,PM10,Moderate,Poor,2326
+GERMANY,PM10,Poor,Good,89
+GERMANY,PM10,Good,Good,48796
+GERMANY,PM10,Very Poor,Fair,55
+GERMANY,PM10,Fair,Poor,467
+GERMANY,PM10,Poor,Fair,430
+GERMANY,PM10,Fair,Very Poor,50
+GERMANY,PM10,Very Poor,Extremely Poor,13
+GERMANY,PM10,Extremely Poor,Fair,13
+GERMANY,PM10,Good,Extremely Poor,5
+GERMANY,PM10,Extremely Poor,Moderate,29
+GERMANY,PM10,Poor,Very Poor,102
+GERMANY,PM10,Poor,Poor,1008
+GERMANY,PM10,Fair,Good,48698
+GERMANY,PM10,Good,Fair,48713
+GERMANY,PM10,Very Poor,Poor,90
+GERMANY,PM10,Poor,Moderate,2336
+GERMANY,PM10,Very Poor,Very Poor,46
+GERMANY,PM10,Good,Poor,79
+GERMANY,PM10,Moderate,Extremely Poor,30
+GERMANY,PM10,Very Poor,Good,14
+GERMANY,PM10,Fair,Extremely Poor,7
+GERMANY,PM10,Extremely Poor,Very Poor,13
+GERMANY,PM10,Extremely Poor,Poor,11
+GERMANY,PM10,Poor,Extremely Poor,16
+GERMANY,PM10,Extremely Poor,Extremely Poor,19
+GERMANY,PM10,Good,Very Poor,15
+GERMANY,PM10,Extremely Poor,Good,5
+GERMANY,PM2.5,Moderate,Poor,5943
+GERMANY,PM2.5,Poor,Extremely Poor,46
+GERMANY,PM2.5,Extremely Poor,Moderate,35
+GERMANY,PM2.5,Moderate,Extremely Poor,36
+GERMANY,PM2.5,Moderate,Moderate,110992
+GERMANY,PM2.5,Poor,Fair,697
+GERMANY,PM2.5,Fair,Fair,79928
+GERMANY,PM2.5,Fair,Moderate,35029
+GERMANY,PM2.5,Moderate,Fair,35030
+GERMANY,PM2.5,Extremely Poor,Poor,48
+GERMANY,PM2.5,Poor,Moderate,5913
+GERMANY,PM2.5,Poor,Very Poor,673
+GERMANY,PM2.5,Very Poor,Moderate,330
+GERMANY,PM2.5,Fair,Poor,699
+GERMANY,PM2.5,Poor,Poor,5420
+GERMANY,PM2.5,Fair,Extremely Poor,14
+GERMANY,PM2.5,Extremely Poor,Extremely Poor,43
+GERMANY,PM2.5,Very Poor,Poor,637
+GERMANY,PM2.5,Fair,Very Poor,71
+GERMANY,PM2.5,Very Poor,Extremely Poor,58
+GERMANY,PM2.5,Extremely Poor,Fair,15
+GERMANY,PM2.5,Fair,Good,6845
+GERMANY,PM2.5,Good,Very Poor,12
+GERMANY,PM2.5,Very Poor,Fair,79
+GERMANY,PM2.5,Good,Moderate,1864
+GERMANY,PM2.5,Good,Fair,6838
+GERMANY,PM2.5,Moderate,Good,1850
+GERMANY,PM2.5,Good,Good,2664
+GERMANY,PM2.5,Good,Poor,117
+GERMANY,PM2.5,Very Poor,Very Poor,533
+GERMANY,PM2.5,Moderate,Very Poor,313
+GERMANY,PM2.5,Extremely Poor,Very Poor,56
+GERMANY,PM2.5,Very Poor,Good,21
+GERMANY,PM2.5,Poor,Good,115
+GERMANY,PM2.5,Good,Extremely Poor,6
+GERMANY,PM2.5,Extremely Poor,Good,6
+ITALY,PM10,Moderate,Very Poor,2820
+ITALY,PM10,Very Poor,Moderate,2675
+ITALY,PM10,Very Poor,Fair,1471
+ITALY,PM10,Fair,Fair,623919
+ITALY,PM10,Fair,Poor,13478
+ITALY,PM10,Poor,Poor,10284
+ITALY,PM10,Poor,Fair,13681
+ITALY,PM10,Fair,Moderate,243800
+ITALY,PM10,Very Poor,Poor,1355
+ITALY,PM10,Poor,Moderate,26560
+ITALY,PM10,Moderate,Poor,26654
+ITALY,PM10,Poor,Extremely Poor,295
+ITALY,PM10,Extremely Poor,Moderate,663
+ITALY,PM10,Moderate,Good,26801
+ITALY,PM10,Good,Fair,87332
+ITALY,PM10,Moderate,Moderate,276806
+ITALY,PM10,Moderate,Fair,243528
+ITALY,PM10,Very Poor,Very Poor,552
+ITALY,PM10,Poor,Very Poor,1333
+ITALY,PM10,Moderate,Extremely Poor,657
+ITALY,PM10,Very Poor,Good,239
+ITALY,PM10,Good,Moderate,26761
+ITALY,PM10,Extremely Poor,Fair,440
+ITALY,PM10,Fair,Good,87307
+ITALY,PM10,Extremely Poor,Poor,313
+ITALY,PM10,Good,Poor,2031
+ITALY,PM10,Fair,Extremely Poor,454
+ITALY,PM10,Fair,Very Poor,1413
+ITALY,PM10,Very Poor,Extremely Poor,152
+ITALY,PM10,Poor,Good,1962
+ITALY,PM10,Good,Very Poor,187
+ITALY,PM10,Good,Good,27533
+ITALY,PM10,Good,Extremely Poor,88
+ITALY,PM10,Extremely Poor,Very Poor,139
+ITALY,PM10,Extremely Poor,Extremely Poor,121
+ITALY,PM10,Extremely Poor,Good,91
+SPAIN,PM2.5,Moderate,Moderate,94364
+SPAIN,PM2.5,Moderate,Fair,38516
+SPAIN,PM2.5,Fair,Fair,31840
+SPAIN,PM2.5,Fair,Good,4359
+SPAIN,PM2.5,Good,Good,1050
+SPAIN,PM2.5,Good,Moderate,3826
+SPAIN,PM2.5,Moderate,Poor,4168
+SPAIN,PM2.5,Poor,Fair,1235
+SPAIN,PM2.5,Fair,Moderate,38185
+SPAIN,PM2.5,Fair,Poor,1304
+SPAIN,PM2.5,Moderate,Good,3576
+SPAIN,PM2.5,Good,Fair,4099
+SPAIN,PM2.5,Poor,Poor,1029
+SPAIN,PM2.5,Poor,Moderate,4271
+SPAIN,PM2.5,Good,Poor,154
+SPAIN,PM2.5,Poor,Good,144
+SPAIN,PM2.5,Poor,Very Poor,68
+SPAIN,PM2.5,Very Poor,Fair,98
+SPAIN,PM2.5,Moderate,Very Poor,299
+SPAIN,PM2.5,Very Poor,Moderate,281
+SPAIN,PM2.5,Moderate,Extremely Poor,60
+SPAIN,PM2.5,Extremely Poor,Fair,32
+SPAIN,PM2.5,Fair,Very Poor,102
+SPAIN,PM2.5,Very Poor,Poor,90
+SPAIN,PM2.5,Extremely Poor,Good,3
+SPAIN,PM2.5,Very Poor,Good,13
+SPAIN,PM2.5,Good,Very Poor,12
+SPAIN,PM2.5,Fair,Extremely Poor,30
+SPAIN,PM2.5,Extremely Poor,Moderate,56
+SPAIN,PM2.5,Extremely Poor,Poor,14
+SPAIN,PM2.5,Poor,Extremely Poor,12
+SPAIN,PM2.5,Very Poor,Very Poor,20
+SPAIN,PM2.5,Extremely Poor,Very Poor,4
+SPAIN,PM2.5,Very Poor,Extremely Poor,3
+SPAIN,PM2.5,Good,Extremely Poor,4
+SPAIN,PM2.5,Extremely Poor,Extremely Poor,7
+UK,PM10,Fair,Good,1629
+UK,PM10,Good,Fair,1664
+UK,PM10,Fair,Fair,3474
+UK,PM10,Fair,Moderate,1397
+UK,PM10,Moderate,Good,652
+UK,PM10,Good,Good,858
+UK,PM10,Moderate,Fair,1360
+UK,PM10,Good,Moderate,606
+UK,PM10,Moderate,Moderate,629
+UK,PM10,Moderate,Poor,34
+UK,PM10,Poor,Moderate,47
+UK,PM10,Poor,Poor,10
+UK,PM10,Fair,Poor,48
+UK,PM10,Poor,Good,29
+UK,PM10,Poor,Fair,46
+UK,PM10,Fair,Very Poor,3
+UK,PM10,Very Poor,Good,5
+UK,PM10,Good,Poor,40
+UK,PM10,Very Poor,Fair,5
+UK,PM10,Moderate,Very Poor,4
+UK,PM10,Good,Very Poor,4
+UK,PM10,Good,Extremely Poor,1
+UK,PM10,Extremely Poor,Fair,2
+UK,PM10,Fair,Extremely Poor,1
+UK,PM10,Very Poor,Moderate,1
+UK,PM2.5,Moderate,Fair,2517
+UK,PM2.5,Fair,Fair,5849
+UK,PM2.5,Fair,Good,855
+UK,PM2.5,Good,Good,149
+UK,PM2.5,Good,Moderate,312
+UK,PM2.5,Good,Fair,858
+UK,PM2.5,Fair,Moderate,2504
+UK,PM2.5,Moderate,Moderate,3080
+UK,PM2.5,Moderate,Poor,248
+UK,PM2.5,Poor,Moderate,268
+UK,PM2.5,Poor,Fair,54
+UK,PM2.5,Fair,Poor,73
+UK,PM2.5,Moderate,Good,317
+UK,PM2.5,Poor,Poor,224
+UK,PM2.5,Moderate,Very Poor,17
+UK,PM2.5,Very Poor,Fair,5
+UK,PM2.5,Good,Poor,5
+UK,PM2.5,Poor,Very Poor,23
+UK,PM2.5,Very Poor,Poor,23
+UK,PM2.5,Very Poor,Moderate,14
+UK,PM2.5,Poor,Good,4
+UK,PM2.5,Very Poor,Very Poor,17
+UK,PM2.5,Fair,Very Poor,2
+UK,PM2.5,Good,Very Poor,1
+UK,PM2.5,Very Poor,Extremely Poor,2
+UK,PM2.5,Extremely Poor,Moderate,1
+UK,PM2.5,Extremely Poor,Very Poor,1
