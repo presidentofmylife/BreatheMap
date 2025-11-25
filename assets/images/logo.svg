@@ -1,0 +1,19 @@
+<!-- START SVG ICON -->
+<svg width="128" height="128" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-lg filter">
+    <defs>
+        <linearGradient id="breatheGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" class="brand-gradient" stop-color="#3B82F6"/>
+            <stop offset="100%" class="brand-gradient-end" stop-color="#10B981"/>
+        </linearGradient>
+    </defs>
+    
+    <!-- Map Pin Shape -->
+    <path d="M100 20C61.34 20 30 51.34 30 90C30 142.5 100 190 100 190C100 190 170 142.5 170 90C170 51.34 138.66 20 100 20Z" 
+            fill="url(#breatheGradient)"/>
+    
+    <!-- Wind/Leaf Negative Space -->
+    <path d="M75 100C75 100 85 80 115 80C125 80 135 85 135 85" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M65 85C65 85 80 65 110 65C120 65 125 70 125 70" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+    <path d="M85 115C85 115 95 105 115 105" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+</svg>
+<!-- END SVG ICON -->
