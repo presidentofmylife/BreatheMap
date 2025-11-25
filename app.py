@@ -11,6 +11,15 @@ app = Flask(
     template_folder="."
 )
 
+# blob_url = 'https://<your-store-id>.vercel.app/remote_file_name.txt'
+# response = requests.get(blob_url)
+# if response.status_code == 200:
+#     content = response.text
+#     print("File content:", content)
+# else:
+#     print(f"Failed to retrieve file. Status code: {response.status_code}")
+
+
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.integer):
@@ -188,6 +197,21 @@ def index():
     json_data = json.dumps(get_analytics_data(), cls=NpEncoder)
     print(json_data)
     return render_template('index.html', analytics_data=json_data)
+
+from flask import request, jsonify
+
+@app.route('/get_values', methods=['GET'])
+def get_values():
+    # Read query parameter ?date=...
+    date_str = request.args.get('date')
+
+    if not date_str:
+        return jsonify({"error": "Missing 'date' parameter"}), 400
+
+    with open('air_quality_by_date.json', 'r') as f:
+        aq_data = json.load(f)
+    result = aq_data.get(date_str, {"error": "No data for the specified date"})
+    return jsonify(result)
 
 if __name__ == "__main__":
     app.run(debug=True)

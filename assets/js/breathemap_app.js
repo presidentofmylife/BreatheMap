@@ -3,89 +3,155 @@
 (function () {
   const MAPTILER_KEY = "Fa0eCZfHtPXtTP8CW5zo";
 
-  /* ======================== POLLUTANT MAP ======================== */
+  /* ----------------------------------------------------------------
+     1. CONFIGURATION & MAPPING
+     ---------------------------------------------------------------- */
+  
+  // Map API Country Names to GeoJSON ISO3 Codes
+  const countryMapping = {
+    "CZECH": "CZE",
+    "CZECH REPUBLIC": "CZE",
+    "GERMANY": "DEU",
+    "ITALY": "ITA",
+    "POLAND": "POL",
+    "SPAIN": "ESP",
+    "SWEDEN": "SWE",
+    "UK": "GBR",
+    "UNITED KINGDOM": "GBR",
+    "FRANCE": "FRA"
+  };
+
+  // Storage for the currently loaded data
+  // Structure: { pm10: {ISO3: val}, pm25: {ISO3: val} }
+  const datasets = {
+    pm10: {},
+    pm25: {}, // Note: using 'pm25' (no dot) for easier JS access
+    o3: {}
+  };
+
+  // Coloring Thresholds
+  const fixedThresholds = {
+    pm10: [10, 20, 30, 40, 50],
+    pm25: [5, 10, 15, 20, 25],
+    o3: [60, 90, 120, 150, 180]
+  };
+
+  const metricLabels = {
+    pm10: 'PM10 (µg/m³)',
+    pm25: 'PM2.5 (µg/m³)',
+    o3: 'O₃ (µg/m³)'
+  };
+
+  const palette = ['#f1eef6', '#bdc9e1', '#74a9cf', '#2b8cbe', '#045a8d', '#023858'];
+  const noDataColor = '#e2e2e2';
+
+  /* ----------------------------------------------------------------
+     2. MAP INITIALIZATION
+     ---------------------------------------------------------------- */
   const aqMap = new maplibregl.Map({
     container: 'pollutant-map',
     style: `https://api.maptiler.com/maps/streets/style.json?key=${MAPTILER_KEY}`,
-    center: [0, 20],
-    zoom: 1.5,
+    center: [10, 50], // Centered roughly on Europe
+    zoom: 3.5,
     attributionControl: true
   });
   aqMap.addControl(new maplibregl.NavigationControl(), 'top-right');
 
-  /* ---- 1) DATASETS (ISO3 -> value) ---- */
-  const datasets = {
-    pm10: { ITA: 42, FRA: 35, ESP: 28, DEU: 22, POL: 30, GBR: 18, GRC: 33, PRT: 20, ROU: 31, SWE: 12 },
-    no2: { ITA: 23, FRA: 24, ESP: 20, DEU: 25, POL: 19, GBR: 24, GRC: 21, PRT: 15, ROU: 17, SWE: 10 },
-    o3: { ITA: 110, FRA: 95, ESP: 105, DEU: 85, POL: 90, GBR: 80, GRC: 120, PRT: 100, ROU: 98, SWE: 75 }
-  };
+  /* ----------------------------------------------------------------
+     3. DATA PROCESSING LOGIC
+     ---------------------------------------------------------------- */
+  
+  /**
+   * Transforms API response: {"GERMANY": [{pollutant: "PM10", value: 39}, ...]} 
+   * Into Map format: datasets.pm10["DEU"] = 39
+   */
+  function processApiData(rawData) {
+    // Reset local datasets
+    datasets.pm10 = {};
+    datasets.pm25 = {};
+    datasets.o3 = {};
 
-  /* ---- 2) THRESHOLDS (for fixed mode) ---- */
-  const fixedThresholds = {
-    pm10: [10, 20, 30, 40, 50],
-    no2: [10, 20, 30, 40, 50],
-    o3: [60, 90, 120, 150, 180]
-  };
-  const metricLabels = {
-    pm10: 'PM10 (µg/m³)',
-    no2: 'NO₂ (µg/m³)',
-    o3: 'O₃ MDA8 (µg/m³)'
-  };
-  const palette = ['#f1eef6', '#bdc9e1', '#74a9cf', '#2b8cbe', '#045a8d', '#023858'];
-  const noDataColor = '#e2e2e2';
+    // 1. Handle case where data is wrapped in a date key (e.g. {"2013-01-01": {...}})
+    let countryData = rawData;
+    const keys = Object.keys(rawData);
+    if(keys.length > 0 && keys[0].match(/^\d{4}-\d{2}-\d{2}$/)) {
+        countryData = rawData[keys[0]]; 
+    }
+
+    // 2. Iterate over Countries (e.g., "CZECH", "GERMANY")
+    for (const [countryName, pollutants] of Object.entries(countryData)) {
+        const iso3 = countryMapping[countryName.toUpperCase()];
+        
+        if (iso3 && Array.isArray(pollutants)) {
+            pollutants.forEach(item => {
+                // Normalize pollutant name (API "PM2.5" -> App "pm25")
+                // remove dots, lowercase
+                const type = item.pollutant.toLowerCase().replace('.', ''); 
+
+                if (datasets[type] !== undefined) {
+                    datasets[type][iso3] = item.value;
+                }
+            });
+        }
+    }
+    console.log("Processed Datasets:", datasets);
+  }
+
+  /* ----------------------------------------------------------------
+     4. MAP COLORING & INTERACTION
+     ---------------------------------------------------------------- */
 
   function buildFillColorExpression(thresholds) {
     const v = ['coalesce', ['feature-state', 'val'], -9999];
-    const n = Math.min(thresholds.length, palette.length - 1);
     const step = ['step', v, palette[0]];
-    for (let i = 0; i < n; i++) step.push(thresholds[i], palette[i + 1]);
+    for (let i = 0; i < thresholds.length; i++) {
+        if(i + 1 < palette.length) {
+            step.push(thresholds[i], palette[i + 1]);
+        }
+    }
     return ['case', ['==', v, -9999], noDataColor, step];
-  }
-
-  function quantilesFromData(metric, classes = 6) {
-    const values = Object.values(datasets[metric] || {}).filter(x => typeof x === 'number').sort((a, b) => a - b);
-    if (values.length < 2) return fixedThresholds[metric];
-    const thresholds = [];
-    for (let i = 1; i < classes; i++) thresholds.push(quantile(values, i / classes));
-    return Array.from(new Set(thresholds.map(x => +x.toFixed(2))));
-  }
-
-  function quantile(arr, p) {
-    const idx = (arr.length - 1) * p;
-    const lo = Math.floor(idx), hi = Math.ceil(idx);
-    if (lo === hi) return arr[lo];
-    return arr[lo] + (arr[hi] - arr[lo]) * (idx - lo);
   }
 
   function updateLegend(metric, thresholds) {
     const el = document.getElementById('aq-legend');
+    if (!el) return;
     const unitLabel = metricLabels[metric] || metric;
     const fmt = v => (Math.abs(v) >= 100 ? v.toFixed(0) : v.toString());
     const parts = [];
     parts.push(`<div style="margin-bottom:4px; font-weight:600; color:#2a2a2a;">${unitLabel}</div>`);
     parts.push(`<div class="row"><span class="swatch" style="background:${palette[0]}"></span><span>&lt; ${fmt(thresholds[0])}</span></div>`);
-    for (let i = 0; i < thresholds.length - 1; i++)
-      parts.push(`<div class="row"><span class="swatch" style="background:${palette[i + 1]}"></span><span>${fmt(thresholds[i])}–${fmt(thresholds[i + 1])}</span></div>`);
+    for (let i = 0; i < thresholds.length - 1; i++) {
+       if(i + 1 < palette.length) {
+          parts.push(`<div class="row"><span class="swatch" style="background:${palette[i + 1]}"></span><span>${fmt(thresholds[i])}–${fmt(thresholds[i + 1])}</span></div>`);
+       }
+    }
     parts.push(`<div class="row"><span class="swatch" style="background:${palette[palette.length - 1]}"></span><span>≥ ${fmt(thresholds[thresholds.length - 1])}</span></div>`);
     parts.push(`<div class="row"><span class="swatch" style="background:${noDataColor}"></span><span>No data</span></div>`);
     el.innerHTML = parts.join('');
   }
 
   function applyDataset(metric) {
-    const scaleMode = document.getElementById('aq-scale').value;
-    const thresholds = (scaleMode === 'quantile') ? quantilesFromData(metric, 6) : fixedThresholds[metric];
+    // 1. Normalize metric key (handle dropdown values like "pm2.5" -> "pm25")
+    const cleanMetric = metric.replace('.', '');
+    
+    // 2. Get thresholds
+    const thresholds = fixedThresholds[cleanMetric] || fixedThresholds.pm10;
 
-    // Update paint property
-    aqMap.setPaintProperty('country-fill', 'fill-color', buildFillColorExpression(thresholds));
-    updateLegend(metric, thresholds);
+    // 3. Update Map Paint Property
+    if (aqMap.getLayer('country-fill')) {
+      aqMap.setPaintProperty('country-fill', 'fill-color', buildFillColorExpression(thresholds));
+    }
+    updateLegend(cleanMetric, thresholds);
 
-    // Set feature states
+    // 4. Update Feature States
     if (!window._aqCountriesFeatures) return;
-    const data = datasets[metric] || {};
+    
+    const currentData = datasets[cleanMetric] || {};
 
     for (const f of window._aqCountriesFeatures) {
       const iso3 = f.properties['ISO3166-1-Alpha-3'];
-      const val = data[iso3];
+      const val = currentData[iso3];
+
       aqMap.setFeatureState(
         { source: 'countries', id: iso3 },
         { val: (typeof val === 'number' ? val : null) }
@@ -93,19 +159,20 @@
     }
   }
 
+  /* ----------------------------------------------------------------
+     5. MAP LOAD EVENT
+     ---------------------------------------------------------------- */
   aqMap.on('load', async () => {
-    // Countries GeoJSON
+    // 1. Fetch Countries GeoJSON
     const url = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson';
     const geo = await (await fetch(url)).json();
 
-    // Store features for later use
     window._aqCountriesFeatures = geo.features;
 
-    // Add source with promoteId to use ISO3 as feature ID
     aqMap.addSource('countries', {
       type: 'geojson',
       data: geo,
-      promoteId: 'ISO3166-1-Alpha-3'
+      promoteId: 'ISO3166-1-Alpha-3' // Important: Uses ISO3 as ID
     });
 
     aqMap.addLayer({
@@ -113,7 +180,7 @@
       type: 'fill',
       source: 'countries',
       paint: {
-        'fill-color': buildFillColorExpression(fixedThresholds.pm10),
+        'fill-color': noDataColor,
         'fill-opacity': 0.8
       }
     });
@@ -125,107 +192,42 @@
       paint: { 'line-color': '#666', 'line-width': 0.6 }
     });
 
-    // Click popup
+    // 2. Popup Interaction
     const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: true });
     aqMap.on('click', 'country-fill', (e) => {
       const f = e.features[0];
       const iso3 = f.properties['ISO3166-1-Alpha-3'];
       const name = f.properties.name || f.properties.ADMIN || 'Country';
-      const metric = document.getElementById('aq-metric').value;
-      const data = datasets[metric] || {};
-      const v = data[iso3];
+      
+      const rawMetric = document.getElementById('aq-metric').value;
+      const cleanMetric = rawMetric.replace('.', '');
+      
+      const val = (datasets[cleanMetric] && datasets[cleanMetric][iso3]);
+
       popup.setLngLat(e.lngLat)
-        .setHTML(`<b>${name}</b><br>${metricLabels[metric] || metric}: ${v != null ? v : 'No data'}`)
+        .setHTML(`<b>${name}</b><br>${metricLabels[cleanMetric] || cleanMetric}: ${val != null ? val.toFixed(1) : 'No data'}`)
         .addTo(aqMap);
     });
+    
     aqMap.on('mouseenter', 'country-fill', () => aqMap.getCanvas().style.cursor = 'pointer');
     aqMap.on('mouseleave', 'country-fill', () => aqMap.getCanvas().style.cursor = '');
 
-    // Apply initial dataset
-    applyDataset('pm10');
+    // 3. Initial Load (triggers fetch for default slider date)
+    fetchDataForDate(); 
   });
 
-  /* ======================== ANALYTICS / CHARTS ======================== */
-  function bucketLabels(thresholds) {
-    const fmt = v => (Math.abs(v) >= 100 ? v.toFixed(0) : v.toString());
-    const labels = [`< ${fmt(thresholds[0])}`];
-    for (let i = 0; i < thresholds.length - 1; i++) {
-      labels.push(`${fmt(thresholds[i])} – ${fmt(thresholds[i + 1])}`);
-    }
-    labels.push(`≥ ${fmt(thresholds[thresholds.length - 1])}`);
-    return labels;
-  }
 
-  function percentageDistribution(values, thresholds) {
-    const bins = new Array(thresholds.length + 1).fill(0);
-    for (const x of values) {
-      let i = 0;
-      while (i < thresholds.length && x >= thresholds[i]) i++;
-      bins[i]++;
-    }
-    const total = values.length || 1;
-    return bins.map(c => +(c * 100 / total).toFixed(1));
-  }
-
-  function makeDoughnutChart(canvasId, labels, data, colors) {
-    const ctx = document.getElementById(canvasId);
-    if (!ctx) return;
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [{ data, backgroundColor: colors }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'bottom' },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => `${ctx.label}: ${ctx.parsed}%`
-            }
-          }
-        },
-        animation: { duration: 500 }
-      }
-    });
-  }
-
-  function renderAnalytics() {
-    const bandColors = ['#f1eef6', '#bdc9e1', '#74a9cf', '#2b8cbe', '#045a8d', '#023858'];
-
-    // PM10
-    const pm10Vals = Object.values({ ITA: 42, FRA: 35, ESP: 28, DEU: 22, POL: 30, GBR: 18, GRC: 33, PRT: 20, ROU: 31, SWE: 12 });
-    const pm10Thr = [10, 20, 30, 40, 50];
-    makeDoughnutChart('chart-pm10', bucketLabels(pm10Thr), percentageDistribution(pm10Vals, pm10Thr), bandColors);
-
-    // NO2
-    const no2Vals = Object.values({ ITA: 23, FRA: 24, ESP: 20, DEU: 25, POL: 19, GBR: 24, GRC: 21, PRT: 15, ROU: 17, SWE: 10 });
-    const no2Thr = [10, 20, 30, 40, 50];
-    makeDoughnutChart('chart-no2', bucketLabels(no2Thr), percentageDistribution(no2Vals, no2Thr), bandColors);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderAnalytics);
-  } else {
-    renderAnalytics();
-  }
-
-  // UI events
-  document.getElementById('aq-metric').addEventListener('change', (e) => applyDataset(e.target.value));
-  document.getElementById('aq-scale').addEventListener('change', () => applyDataset(document.getElementById('aq-metric').value));
-  document.getElementById('aq-reset').addEventListener('click', () => aqMap.flyTo({ center: [0, 20], zoom: 1.5 }));
-
-  /* ======================== TIME SLIDER ======================== */
+  /* ----------------------------------------------------------------
+     6. TIME SLIDER LOGIC
+     ---------------------------------------------------------------- */
   const timeState = {
-    level: 'year',     // 'year', 'month', or 'day'
+    level: 'year',
     year: 2024,
     month: null,
     day: null
   };
 
-  const years = [2020, 2021, 2022, 2023, 2024];
+  const years = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024, 2025];
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   function getDaysInMonth(year, month) {
@@ -239,6 +241,8 @@
     const labels = document.getElementById('time-labels');
     const drillBtn = document.getElementById('time-drill');
     const backBtn = document.getElementById('time-back');
+
+    if (!slider) return;
 
     if (timeState.level === 'year') {
       slider.min = 0;
@@ -257,14 +261,15 @@
       slider.max = months.length - 1;
       slider.value = timeState.month || 0;
       display.textContent = `${months[timeState.month]} ${timeState.year}`;
-      breadcrumb.innerHTML = `<span id="bc-year">${timeState.year}</span> › <span class="active">Month</span>`;
+      breadcrumb.innerHTML = `<span id="bc-year" style="cursor:pointer; text-decoration:underline;">${timeState.year}</span> › <span class="active">Month</span>`;
       labels.innerHTML = months.map(m => `<span>${m}</span>`).join('');
       drillBtn.textContent = 'Day →';
       drillBtn.disabled = false;
       backBtn.disabled = false;
       backBtn.style.opacity = '1';
 
-      document.getElementById('bc-year').addEventListener('click', () => {
+      const bcYear = document.getElementById('bc-year');
+      if(bcYear) bcYear.addEventListener('click', () => {
         timeState.level = 'year';
         timeState.month = null;
         timeState.day = null;
@@ -277,17 +282,13 @@
       slider.max = daysInMonth;
       slider.value = timeState.day || 1;
       display.textContent = `${months[timeState.month]} ${timeState.day}, ${timeState.year}`;
-      breadcrumb.innerHTML = `<span id="bc-year">${timeState.year}</span> › <span id="bc-month">${months[timeState.month]}</span> › <span class="active">Day</span>`;
+      breadcrumb.innerHTML = `<span id="bc-year" style="cursor:pointer; text-decoration:underline;">${timeState.year}</span> › <span id="bc-month" style="cursor:pointer; text-decoration:underline;">${months[timeState.month]}</span> › <span class="active">Day</span>`;
 
-      // Show day labels (simplified - show first, middle, last)
+      // Simplified day labels
       const dayLabels = [];
       const step = Math.max(1, Math.floor(daysInMonth / 4));
-      for (let i = 1; i <= daysInMonth; i += step) {
-        dayLabels.push(i);
-      }
-      if (dayLabels[dayLabels.length - 1] !== daysInMonth) {
-        dayLabels.push(daysInMonth);
-      }
+      for (let i = 1; i <= daysInMonth; i += step) dayLabels.push(i);
+      if (dayLabels[dayLabels.length - 1] !== daysInMonth) dayLabels.push(daysInMonth);
       labels.innerHTML = dayLabels.map(d => `<span>${d}</span>`).join('');
 
       drillBtn.textContent = 'Max Detail';
@@ -296,14 +297,16 @@
       backBtn.disabled = false;
       backBtn.style.opacity = '1';
 
-      document.getElementById('bc-year').addEventListener('click', () => {
+      const bcYear = document.getElementById('bc-year');
+      if(bcYear) bcYear.addEventListener('click', () => {
         timeState.level = 'year';
         timeState.month = null;
         timeState.day = null;
         updateTimeSlider();
       });
 
-      document.getElementById('bc-month').addEventListener('click', () => {
+      const bcMonth = document.getElementById('bc-month');
+      if(bcMonth) bcMonth.addEventListener('click', () => {
         timeState.level = 'month';
         timeState.day = null;
         updateTimeSlider();
@@ -311,68 +314,177 @@
     }
   }
 
-  document.getElementById('time-slider').addEventListener('input', (e) => {
-    const val = parseInt(e.target.value);
-    if (timeState.level === 'year') {
-      timeState.year = years[val];
-      document.getElementById('time-display').textContent = timeState.year;
-    } else if (timeState.level === 'month') {
-      timeState.month = val;
-      document.getElementById('time-display').textContent = `${months[val]} ${timeState.year}`;
-    } else if (timeState.level === 'day') {
-      timeState.day = val;
-      document.getElementById('time-display').textContent = `${months[timeState.month]} ${val}, ${timeState.year}`;
-    }
-  });
+  /* ----------------------------------------------------------------
+     7. DATA FETCHING
+     ---------------------------------------------------------------- */
+  async function fetchDataForDate() {
+      // Construct Date: YYYY-MM-DD
+      const year = timeState.year;
+      // Default to Jan 1st if month/day are null (Year view)
+      const month = (timeState.month !== null) ? timeState.month + 1 : 1; 
+      const day = (timeState.day !== null) ? timeState.day : 1;
 
-  document.getElementById('time-drill').addEventListener('click', () => {
-    if (timeState.level === 'year') {
-      timeState.level = 'month';
-      timeState.month = 0;
-    } else if (timeState.level === 'month') {
-      timeState.level = 'day';
-      timeState.day = 1;
-    }
-    updateTimeSlider();
-  });
+      const mm = String(month).padStart(2, '0');
+      const dd = String(day).padStart(2, '0');
+      const dateStr = `${year}-${mm}-${dd}`;
 
-  document.getElementById('time-back').addEventListener('click', () => {
-    if (timeState.level === 'day') {
-      timeState.level = 'month';
-      timeState.day = null;
-    } else if (timeState.level === 'month') {
-      timeState.level = 'year';
-      timeState.month = null;
-    }
-    updateTimeSlider();
-  });
+      console.log(`Fetching data for date: ${dateStr}`);
+      
+      const btn = document.getElementById('btn-update-date');
+      if(btn) {
+          btn.textContent = "Loading...";
+          btn.disabled = true;
+      }
 
-  // Initialize
+      try {
+          // Call your Flask endpoint
+          const response = await fetch(`/get_values?date=${dateStr}`);
+          
+          if (!response.ok) {
+              throw new Error(`Server returned ${response.status}`);
+          }
+
+          const newData = await response.json();
+          // console.log("Raw Data received:", newData);
+
+          // 1. Process Data (Map Names -> ISO3, Flatten Structure)
+          processApiData(newData);
+
+          // 2. Apply to Map
+          const currentMetric = document.getElementById('aq-metric').value;
+          applyDataset(currentMetric);
+          
+      } catch (error) {
+          console.error("Failed to fetch data:", error);
+          // Optional: alert("Could not load data for this date.");
+      } finally {
+          if(btn) {
+              btn.textContent = "Update Map";
+              btn.disabled = false;
+          }
+      }
+  }
+
+
+  /* ----------------------------------------------------------------
+     8. UI EVENT LISTENERS
+     ---------------------------------------------------------------- */
+  
+  // Metric Dropdown Change
+  const metricSelect = document.getElementById('aq-metric');
+  if(metricSelect) {
+      metricSelect.addEventListener('change', (e) => applyDataset(e.target.value));
+  }
+  
+  // Reset View Button
+  const resetBtn = document.getElementById('aq-reset');
+  if(resetBtn) {
+      resetBtn.addEventListener('click', () => aqMap.flyTo({ center: [10, 50], zoom: 3.5 }));
+  }
+
+  // Update Map Button (if you added it)
+  const updateDateBtn = document.getElementById('btn-update-date');
+  if (updateDateBtn) {
+      updateDateBtn.addEventListener('click', fetchDataForDate);
+  }
+
+  // Slider Input - Automatically fetch data on release
+  const sliderEl = document.getElementById('time-slider');
+  if(sliderEl) {
+      // Use 'change' instead of 'input' so it only fetches when you let go of the handle
+      sliderEl.addEventListener('change', (e) => {
+        const val = parseInt(e.target.value);
+        
+        // 1. Update the internal state based on slider position
+        if (timeState.level === 'year') {
+          timeState.year = years[val];
+          document.getElementById('time-display').textContent = timeState.year;
+        } 
+        else if (timeState.level === 'month') {
+          timeState.month = val;
+          document.getElementById('time-display').textContent = `${months[val]} ${timeState.year}`;
+        } 
+        else if (timeState.level === 'day') {
+          timeState.day = val;
+          document.getElementById('time-display').textContent = `${months[timeState.month]} ${val}, ${timeState.year}`;
+        }
+
+        // 2. TRIGGER THE FETCH AUTOMATICALLY
+        fetchDataForDate(); 
+      });
+
+      // Optional: Keep 'input' just for updating text labels smoothly while dragging (no fetch)
+      sliderEl.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        if (timeState.level === 'year') {
+           document.getElementById('time-display').textContent = years[val];
+        } else if (timeState.level === 'month') {
+           document.getElementById('time-display').textContent = `${months[val]} ${timeState.year}`;
+        } else if (timeState.level === 'day') {
+           document.getElementById('time-display').textContent = `${months[timeState.month]} ${val}, ${timeState.year}`;
+        }
+      });
+  }
+
+  // Slider Drill Down
+  const drillEl = document.getElementById('time-drill');
+  if(drillEl) {
+      drillEl.addEventListener('click', () => {
+        if (timeState.level === 'year') {
+          timeState.level = 'month';
+          timeState.month = 0;
+        } else if (timeState.level === 'month') {
+          timeState.level = 'day';
+          timeState.day = 1;
+        }
+        updateTimeSlider();
+      });
+  }
+
+  // Slider Back
+  const backEl = document.getElementById('time-back');
+  if(backEl) {
+      backEl.addEventListener('click', () => {
+        if (timeState.level === 'day') {
+          timeState.level = 'month';
+          timeState.day = null;
+        } else if (timeState.level === 'month') {
+          timeState.level = 'year';
+          timeState.month = null;
+        }
+        updateTimeSlider();
+      });
+  }
+
+  // Initialize Slider UI
   updateTimeSlider();
 })();
 
-// ===== Charts (separate DOMContentLoaded block retained) =====
+/* ==================================================================
+   ANALYTICS CHARTS
+   ================================================================== */
 document.addEventListener("DOMContentLoaded", function () {
   
-  // 1. Check if data exists
+  // 1. Check if analytics data exists (injected by Flask)
   let db = window.analyticsData;
   if (!db) {
-    console.error("Analytics data not loaded from Flask");
+    console.warn("Analytics data not loaded from Flask template.");
     return;
   }
-  // console.log(db);
+
+  // Parse if string
   try {
-    db = JSON.parse(db);
+    if (typeof db === 'string') db = JSON.parse(db);
   } catch (e) {
-    // console.error("Error parsing analytics data:", e);
-    // return;
+    console.error("Error parsing analytics data:", e);
+    return;
   }
 
-  // --- CONFIGURATION: Colors ---
+  // Configuration
   const colors = {
     pm25: 'rgba(255, 99, 132, 0.8)',
     pm10: 'rgba(54, 162, 235, 0.8)',
-    aqi: ['#50f000', '#ffff00', '#ff9000', '#ff0000', '#99004c', '#730029'] // Good -> Extremely Poor
+    aqi: ['#50f000', '#ffff00', '#ff9000', '#ff0000', '#99004c', '#730029'] // Good -> Hazardous
   };
 
   const commonOptions = {
@@ -387,41 +499,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // --- CHART 1: Country Comparison (Bar Chart) ---
-  if(db.summary && document.getElementById('chart-country-comparison')) {
-    new Chart(document.getElementById('chart-country-comparison'), {
+  // --- CHART 1: Country Comparison ---
+  if(db.summary && document.getElementById('chart-mean')) {
+    new Chart(document.getElementById('chart-mean'), {
       type: 'bar',
       data: {
-        labels: db.summary.countries, // Dynamic Labels
+        labels: db.summary.countries,
         datasets: [
-          {
-            label: 'PM2.5 Mean',
-            data: db.summary.pm25_mean, // Dynamic Data
-            backgroundColor: colors.pm25,
-            borderRadius: 4
-          },
-          {
-            label: 'PM10 Mean',
-            data: db.summary.pm10_mean, // Dynamic Data
-            backgroundColor: colors.pm10,
-            borderRadius: 4
-          }
+          { label: 'PM2.5 Mean', data: db.summary.pm25_mean, backgroundColor: colors.pm25, borderRadius: 4 },
+          { label: 'PM10 Mean', data: db.summary.pm10_mean, backgroundColor: colors.pm10, borderRadius: 4 }
         ]
       },
       options: commonOptions
     });
   }
 
-  // --- CHART 2: WHO Exceedance (Horizontal Bar) ---
-  if(db.exceedance && document.getElementById('chart-who-exceedance')) {
-    new Chart(document.getElementById('chart-who-exceedance'), {
+  // --- CHART 2: WHO Compliance ---
+  if(db.exceedance && document.getElementById('chart-compliance')) {
+    new Chart(document.getElementById('chart-compliance'), {
       type: 'bar',
       indexAxis: 'y',
       data: {
-        labels: db.exceedance.countries, // Dynamic Labels
+        labels: db.exceedance.countries,
         datasets: [{
           label: '% Days > WHO Guideline (PM2.5)',
-          data: db.exceedance.pct, // Dynamic Data
+          data: db.exceedance.pct,
           backgroundColor: (ctx) => {
             const val = ctx.raw;
             if (val > 30) return 'rgba(255, 0, 0, 0.7)';
@@ -438,14 +540,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- CHART 3: Seasonal Patterns ---
-  // Note: Your PySpark script calculates monthly_pd but currently only saves table3_seasonal_ratios.csv. 
-  // You need to ensure 'monthly_pd' is saved to CSV in your PySpark script to populate this dynamically.
-  // For now, this remains static or you must add `monthly_pd.to_csv(...)` in Python.
-
-  // --- CHART 4 & 5: AQI Distribution (Doughnuts) ---
-  // Using table_seasonal_aqi.csv data
-  
+  // --- CHARTS 3 & 4: AQI Distribution ---
   const doughnutOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -458,11 +553,7 @@ document.addEventListener("DOMContentLoaded", function () {
       type: 'doughnut',
       data: {
         labels: db.aqi_labels,
-        datasets: [{
-          data: db.aqi_winter, // Dynamic Winter Data
-          backgroundColor: colors.aqi,
-          borderWidth: 0
-        }]
+        datasets: [{ data: db.aqi_winter, backgroundColor: colors.aqi, borderWidth: 0 }]
       },
       options: doughnutOptions
     });
@@ -473,17 +564,13 @@ document.addEventListener("DOMContentLoaded", function () {
       type: 'doughnut',
       data: {
         labels: db.aqi_labels,
-        datasets: [{
-          data: db.aqi_summer, // Dynamic Summer Data
-          backgroundColor: colors.aqi,
-          borderWidth: 0
-        }]
+        datasets: [{ data: db.aqi_summer, backgroundColor: colors.aqi, borderWidth: 0 }]
       },
       options: doughnutOptions
     });
   }
 
-  // --- CHART 6: PM2.5/PM10 Ratio ---
+  // --- CHART 5: Ratio ---
   if(db.ratio && document.getElementById('chart-ratio')) {
     new Chart(document.getElementById('chart-ratio'), {
       type: 'bar',
@@ -499,15 +586,13 @@ document.addEventListener("DOMContentLoaded", function () {
       options: {
         ...commonOptions,
         scales: {
-          y: {
-            min: 0, max: 1.0,
-            title: { display: true, text: 'Ratio (PM2.5 / PM10)' }
-          }
+          y: { min: 0, max: 1.0, title: { display: true, text: 'Ratio (PM2.5 / PM10)' } }
         }
       }
     });
   }
-  // --- NEW: Mortality Risk Chart ---
+
+  // --- CHART 6: Mortality Risk ---
   if(db.mortality && document.getElementById('chart-mortality')) {
     new Chart(document.getElementById('chart-mortality'), {
       type: 'bar',
@@ -525,7 +610,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- NEW: Yearly Trends Line Chart ---
+  // --- CHART 7: Yearly Trends ---
   if(db.yearly_trends && document.getElementById('chart-yearly')) {
     const datasets = Object.keys(db.yearly_trends.data).map((country, i) => ({
       label: country,
@@ -545,9 +630,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- NEW: Weekend vs Weekday ---
+  // --- CHART 8: Weekend vs Weekday ---
   if(db.weekend_effect && document.getElementById('chart-weekend')) {
-    console.log(db.weekend_effect);
     const countries = Object.keys(db.weekend_effect);
     const wknd = countries.map(c => db.weekend_effect[c].weekend);
     const wkday = countries.map(c => db.weekend_effect[c].weekday);
@@ -565,9 +649,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- NEW: Populate Model Performance Table ---
+  // --- TABLE: Model Performance ---
   if(db.model_performance && document.getElementById('table-model-perf')) {
     const tbody = document.getElementById('table-model-perf');
+    tbody.innerHTML = '';
     db.model_performance.forEach(row => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -580,17 +665,19 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
   
-  // --- (Don't forget to keep the Worst Episodes table logic from previous answer) ---
+  // --- TABLE: Worst Episodes ---
   if(db.worst_episodes && document.getElementById('table-worst-episodes')) {
       const tbody = document.getElementById('table-worst-episodes');
+      tbody.innerHTML = '';
       db.worst_episodes.forEach(row => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${row.date}</td>
           <td><strong>${row.country}</strong></td>
           <td>${parseFloat(row.avg_concentration).toFixed(1)}</td>
+          <td>${row.aqi || '-'}</td>
         `;
         tbody.appendChild(tr);
       });
   }
-}, 1000);
+});

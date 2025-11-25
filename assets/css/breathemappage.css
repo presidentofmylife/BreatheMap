@@ -218,7 +218,7 @@ body.is-mobile.landing #banner {
 /* Legend: allow it to shrink and scroll if needed */
 #air .aq-legend {
     min-width: unset;
-    max-width: min(110px, calc(100% - 20px));
+    max-width: min(120px, calc(100% - 20px));
     max-height: 40vh;
     overflow: auto;
 }
@@ -280,11 +280,11 @@ body.is-mobile.landing #banner {
    ========================================================================== */
 .time-slider-container {
     position: absolute;
-    bottom: 60px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
-    background: rgba(255, 255, 255, .98);
+    /* background: rgba(255, 255, 255, .98); */
     backdrop-filter: blur(10px);
     border-radius: 12px;
     padding: 12px 20px;
@@ -450,6 +450,9 @@ body.is-mobile.landing #banner {
     .time-labels { font-size: 8px; margin-top: 2px; }
     .time-controls { gap: 4px; margin-top: 6px; }
     .time-btn { padding: 4px 6px; font-size: 9px; border-radius: 4px; }
+    #air .aq-legend .row {
+        gap: 0;
+    }
 }
 
 @media (max-width: 480px) {

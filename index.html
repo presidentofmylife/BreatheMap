@@ -42,25 +42,18 @@
     <!-- Air Quality MAP + Analytics -->
     <section id="air" class="wrapper alt style2">
       <header class="major align-center" id="map-header">
-        <h2>Air Quality Across European Countries</h2>
+        <h2>Air Quality Across 8 European Countries</h2>
       </header>
       <div class="inner">
         <div class="map-wrap">
           <div id="pollutant-map"></div>
-
           <!-- UI -->
           <div class="aq-controls">
             <label>
-              Metric:<select id="aq-metric">
+              Metric:
+              <select id="aq-metric">
                 <option value="pm10">PM10 (µg/m³)</option>
-                <option value="no2">NO₂ (µg/m³)</option>
-                <option value="o3">O₃ MDA8 (µg/m³)</option>
-              </select>
-            </label>
-            <label>
-              Scale:<select id="aq-scale">
-                <option value="fixed">Fixed thresholds</option>
-                <option value="quantile">Quantiles (6 classes)</option>
+                <option value="pm25">PM2.5 (µg/m³)</option>
               </select>
             </label>
             <button id="aq-reset" type="button">Reset view</button>
@@ -78,11 +71,18 @@
             <div class="slider-wrapper">
               <input type="range" class="time-slider" id="time-slider" min="0" max="4" value="4" step="1" />
               <div class="time-labels" id="time-labels">
-                <span>2020</span>
+                <span>2013</span>
+                <span>2014</span>
+                <span>2015</span>
+                <span>2016</span>
+                <span>2017</span>
+                <span>2018</span>
+                <span>2019</span>
                 <span>2021</span>
                 <span>2022</span>
                 <span>2023</span>
                 <span>2024</span>
+                <span>2025</span>
               </div>
             </div>
             <div class="time-controls">
@@ -203,10 +203,11 @@
     <footer id="footer">
       <ul class="icons">
         <li>
-          <a href="#" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a>
+          <a href="https://www.linkedin.com/in/omarelsendiony/" class="icon brands fa-linkedin"><span
+              class="label">LinkedIn</span></a>
         </li>
         <li>
-          <a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a>
+          <a href="mailto:omar.sendiony@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a>
         </li>
       </ul>
       <ul class="copyright">
