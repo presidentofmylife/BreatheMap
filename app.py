@@ -129,11 +129,40 @@ def get_analytics_data():
 
     # 7. Model Performance (New Table/Chart)
     # Checks for both filename possibilities
-    df = load_csv("country_performance_pm25.csv") 
-    if df is None: df = load_csv("PM2_5_BELGIUM_CZECH_GERMANY_ITALY_POLAND_SPAIN_SWEDEN_UK_country_performance.csv")
-    if df is not None:
-        data['model_performance'] = df.to_dict(orient='records')
+    # df = load_csv("country_performance_pm25.csv") 
+    # if df is None: df = load_csv("PM2_5_BELGIUM_CZECH_GERMANY_ITALY_POLAND_SPAIN_SWEDEN_UK_country_performance.csv")
+    # if df is not None:
+    flat_model_performance = []
 
+    try:
+        with open("final_global_metrics.json", 'r') as f:
+            # 1. Load the raw nested dictionary
+            nested_data = json.load(f)
+            
+            # 2. Iterate through the nesting to flatten it
+            # Structure is: Country -> Pollutant -> List of Models
+            for country, pollutants in nested_data.items():
+                for pollutant_name, models in pollutants.items():
+                    for model_stats in models:
+                        # 3. Create a single flat record matching the JS keys
+                        record = {
+                            "country": country,
+                            "pollutant": pollutant_name,
+                            "model": model_stats["Model"],
+                            # Ensure keys are lowercase to match your JS: row.rmse, row.mae
+                            "rmse": model_stats["RMSE"], 
+                            "mae": model_stats["MAE"],
+                            "r2": model_stats["R2"]
+                        }
+                        flat_model_performance.append(record)
+
+        # 4. Assign the flat list to your data object
+        data['model_performance'] = flat_model_performance
+
+    except FileNotFoundError:
+        print("JSON file not found.")
+        data['model_performance'] = []
+    
     # 8. Health Risk Days (New Chart)
     df = load_csv("table_health_risk_days.csv")
     if df is not None:

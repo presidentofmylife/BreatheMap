@@ -657,9 +657,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><strong>${row.country}</strong></td>
+        <td><strong>${row.pollutant}</strong></td>
+        <td><strong>${row.model}</strong></td>
         <td>${parseFloat(row.rmse).toFixed(3)}</td>
         <td>${parseFloat(row.mae).toFixed(3)}</td>
-        <td>${row.count}</td>
+        <td>${parseFloat(row.r2).toFixed(3)}</td>
       `;
       tbody.appendChild(tr);
     });
