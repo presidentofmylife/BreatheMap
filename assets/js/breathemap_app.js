@@ -484,7 +484,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const colors = {
     pm25: 'rgba(255, 99, 132, 0.8)',
     pm10: 'rgba(54, 162, 235, 0.8)',
-    aqi: ['#50f000', '#ffff00', '#ff9000', '#ff0000', '#99004c', '#730029'] // Good -> Hazardous
+    aqi: ['#50f000', '#ffff00', '#ff9000', '#ff0000', '#99004c', '#730029'], // Good -> Hazardous,
+    pm25_mean: '#9c27b0',
+    pm25_std:  '#ba68c8',
+    pm25_min:  '#e1bee7',
+    pm25_max:  '#6a0080',
+
+    // PM10 (teal/green scale)
+    pm10_mean: '#009688',
+    pm10_std:  '#4db6ac',
+    pm10_min:  '#b2dfdb',
+    pm10_max:  '#00695c'
   };
 
   const commonOptions = {
@@ -498,7 +508,7 @@ document.addEventListener("DOMContentLoaded", function () {
       x: { grid: { display: false } }
     }
   };
-
+  console.log(db)
   // --- CHART 1: Country Comparison ---
   if(db.summary && document.getElementById('chart-mean')) {
     new Chart(document.getElementById('chart-mean'), {
@@ -507,7 +517,13 @@ document.addEventListener("DOMContentLoaded", function () {
         labels: db.summary.countries,
         datasets: [
           { label: 'PM2.5 Mean', data: db.summary.pm25_mean, backgroundColor: colors.pm25, borderRadius: 4 },
-          { label: 'PM10 Mean', data: db.summary.pm10_mean, backgroundColor: colors.pm10, borderRadius: 4 }
+          { label: 'PM10 Mean', data: db.summary.pm10_mean, backgroundColor: colors.pm10, borderRadius: 4 },
+          { label: 'PM2.5 Std', data: db.summary.pm25_std, backgroundColor: colors.pm25_std, borderRadius: 4 },
+          { label: 'PM10 Std', data: db.summary.pm10_std, backgroundColor: colors.pm10_std, borderRadius: 4 },   
+          { label: 'PM2.5 Min', data: db.summary.pm25_min, backgroundColor: colors.pm25_min, borderRadius: 4 },
+          { label: 'PM10 Min', data: db.summary.pm10_min, backgroundColor: colors.pm10_min, borderRadius: 4 },  
+          { label: 'PM2.5 Max', data: db.summary.pm25_max, backgroundColor: colors.pm25_max, borderRadius: 4 },
+          { label: 'PM10 Max', data: db.summary.pm10_max, backgroundColor: colors.pm10_max, borderRadius: 4 },     
         ]
       },
       options: commonOptions
@@ -520,10 +536,10 @@ document.addEventListener("DOMContentLoaded", function () {
       type: 'bar',
       indexAxis: 'y',
       data: {
-        labels: db.exceedance.countries,
+        labels: db.compliance.countries,
         datasets: [{
           label: '% Days > WHO Guideline (PM2.5)',
-          data: db.exceedance.pct,
+          data: db.compliance.pct25,
           backgroundColor: (ctx) => {
             const val = ctx.raw;
             if (val > 30) return 'rgba(255, 0, 0, 0.7)';

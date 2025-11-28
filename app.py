@@ -56,8 +56,9 @@ def get_analytics_data():
     # PART 1: ORIGINAL ANALYTICS (Charts 1-6)
     # =========================================================
 
-    # 1. Summary Statistics (Chart 1: Mean Comparison)
-    df = load_csv("summary_statistics.csv")
+    # 1. Summary Statistics (Chart 1: Summary Stats)
+    df = load_csv("table1_summary_stats.csv")
+    print(df)
     if df is not None:
         try:
             df = df.sort_values('country')
@@ -65,8 +66,14 @@ def get_analytics_data():
             pm10 = df[df['pollutant_name'] == 'PM10']
             data['summary'] = {
                 'countries': pm25['country'].tolist(),
-                'pm25': clean_list(pm25['mean'].tolist()),
-                'pm10': clean_list(pm10['mean'].tolist())
+                'pm25_mean': clean_list(pm25['mean'].tolist()),
+                'pm10_mean': clean_list(pm10['mean'].tolist()),
+                'pm25_std': clean_list(pm25['std'].tolist()),
+                'pm10_std': clean_list(pm10['std'].tolist()),
+                'pm25_min': clean_list(pm25['min'].tolist()),
+                'pm10_min': clean_list(pm10['min'].tolist()),
+                'pm25_max': clean_list(pm25['max'].tolist()),
+                'pm10_max': clean_list(pm10['max'].tolist()),
             }
         except: pass
 
@@ -76,9 +83,11 @@ def get_analytics_data():
     if df is not None:
         try:
             pm25 = df[df['pollutant_name'] == 'PM2.5'].sort_values('who_compliance_pct')
+            pm10 = df[df['pollutant_name'] == 'PM10'].sort_values('who_compliance_pct')
             data['compliance'] = {
                 'countries': pm25['country'].tolist(),
-                'pct': clean_list(pm25['who_compliance_pct'].tolist())
+                'pct25': clean_list(pm25['who_compliance_pct'].tolist()),
+                'pct10': clean_list(pm10['who_compliance_pct'].tolist()),
             }
         except: pass
 
@@ -218,13 +227,13 @@ def get_analytics_data():
     if df is not None:
         data['worst_episodes'] = df.head(10).to_dict(orient='records')
 
-    print(f"Keys Loaded: {list(data.keys())}")
+    # print(f"Keys Loaded: {list(data.keys())}")
     return data
 
 @app.route('/')
 def index():
     json_data = json.dumps(get_analytics_data(), cls=NpEncoder)
-    print(json_data)
+    # print(json_data)
     return render_template('index.html', analytics_data=json_data)
 
 from flask import request, jsonify

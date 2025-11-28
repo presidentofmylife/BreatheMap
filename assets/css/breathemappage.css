@@ -413,6 +413,13 @@ body.is-mobile.landing #banner {
     background: #2b8cbe;
 }
 
+.maplibregl-popup-content{
+    color: black
+}
+
+.maplibregl-popup-content *{
+    color: black
+}
 /* Responsive time slider */
 @media (max-width: 980px) {
     .time-slider-container {
